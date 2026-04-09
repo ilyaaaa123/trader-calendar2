@@ -85,11 +85,18 @@
             background: #0A1A2A;
             font-weight: bold;
             font-size: 14px;
+            transition: all 0.2s ease;
         }
         .calendar-day.profit-day { background: #1E6F3F; }
         .calendar-day.loss-day { background: #8B2C2C; }
         .calendar-day.comment-day { background: #B1661A; }
         .calendar-day.admin-day { background: #9b59b6; }
+        /* Подсветка выбранного дня */
+        .calendar-day.selected-day {
+            background: #3B82F6 !important;
+            box-shadow: 0 0 0 2px #90E0FF;
+            transform: scale(1.02);
+        }
         
         .trade-item {
             background: #0E1C2C;
@@ -211,7 +218,6 @@
         }
         .action-buttons button { flex: 1; font-size: 13px; padding: 8px; }
         
-        /* Стили для метрик прибыли */
         .stats-row {
             display: flex;
             gap: 12px;
@@ -272,7 +278,6 @@
         </div>
         <div id="calendarContainer"></div>
         
-        <!-- Блок с общей прибылью за месяц -->
         <div class="stats-row" id="monthStats">
             <div class="stat-card">
                 <div class="label">👑 Общая прибыль (публичные сделки)</div>
@@ -342,12 +347,12 @@
     let pendingViolationDate = null;
     let currentYear = 2026;
     let currentMonth = 3;
+    let selectedDayElement = null; // для хранения выбранного дня
     
     // ========== РАСЧЁТ ПРИБЫЛИ ЗА МЕСЯЦ ==========
     function calculateMonthProfit(year, month) {
         const monthStr = `${year}-${String(month+1).padStart(2,'0')}`;
         
-        // Публичные сделки (администратор)
         let publicProfit = 0;
         adminTrades.forEach(t => {
             if(t.date.startsWith(monthStr)) {
@@ -355,7 +360,6 @@
             }
         });
         
-        // Личные сделки (текущий пользователь)
         let privateProfit = 0;
         guestTrades.forEach(t => {
             if(t.date.startsWith(monthStr)) {
@@ -752,11 +756,33 @@
         }
         html += `</div>`;
         document.getElementById('calendarContainer').innerHTML = html;
+        
+        // Добавляем обработчики с подсветкой выбранного дня
         document.querySelectorAll('.calendar-day').forEach(el => {
             const date = el.getAttribute('data-date');
-            if(date) el.onclick = () => { selectedDateForAdd = date; showTradesForDate(date); };
+            if(date) {
+                el.onclick = () => {
+                    // Убираем подсветку с предыдущего выбранного дня
+                    if(selectedDayElement) {
+                        selectedDayElement.classList.remove('selected-day');
+                    }
+                    // Добавляем подсветку новому дню
+                    el.classList.add('selected-day');
+                    selectedDayElement = el;
+                    selectedDateForAdd = date;
+                    showTradesForDate(date);
+                };
+            }
         });
+        
         const defaultDate = `${year}-${String(month+1).padStart(2,'0')}-01`;
+        // Подсвечиваем первый день месяца по умолчанию
+        const defaultDayElement = document.querySelector(`.calendar-day[data-date="${defaultDate}"]`);
+        if(defaultDayElement) {
+            if(selectedDayElement) selectedDayElement.classList.remove('selected-day');
+            defaultDayElement.classList.add('selected-day');
+            selectedDayElement = defaultDayElement;
+        }
         showTradesForDate(defaultDate);
         updateMonthStats();
     }
