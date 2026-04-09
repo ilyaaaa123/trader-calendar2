@@ -281,9 +281,9 @@
     }
     
     // ========== ДАННЫЕ ==========
-    let adminTrades = [];     // общие сделки (с сервера)
-    let guestTrades = [];     // личные сделки (localStorage)
-    let violations = [];      // нарушения (localStorage)
+    let adminTrades = [];
+    let guestTrades = [];
+    let violations = [];
     let selectedDateForAdd = null;
     let pendingViolationDate = null;
     let currentYear = 2026;
@@ -292,22 +292,25 @@
     // ========== РАБОТА С MOCKAPI ==========
     async function loadAdminTrades() {
         try {
+            console.log("Загрузка общих сделок с:", API_URL);
             const response = await fetch(API_URL);
             if(response.ok) {
                 adminTrades = await response.json();
+                console.log("Загружено сделок:", adminTrades.length);
             } else {
+                console.log("Ошибка загрузки, статус:", response.status);
                 adminTrades = [];
             }
         } catch(e) {
             console.log("Ошибка загрузки общих сделок:", e);
             adminTrades = [];
         }
-        saveTrades();
         renderCalendar(currentYear, currentMonth);
     }
     
     async function saveAdminTrade(trade) {
         try {
+            console.log("Отправка общей сделки:", trade);
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -316,9 +319,15 @@
             if(response.ok) {
                 const newTrade = await response.json();
                 adminTrades.push(newTrade);
+                console.log("Сделка сохранена, ответ:", newTrade);
+                alert("✅ Общая сделка добавлена!");
+            } else {
+                console.log("Ошибка сохранения, статус:", response.status);
+                alert("❌ Ошибка при сохранении общей сделки");
             }
         } catch(e) {
             console.log("Ошибка сохранения общей сделки:", e);
+            alert("❌ Ошибка соединения с сервером");
         }
         renderCalendar(currentYear, currentMonth);
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
@@ -328,6 +337,7 @@
         try {
             await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             adminTrades = adminTrades.filter(t => t.id != id);
+            console.log("Сделка удалена, id:", id);
         } catch(e) {
             console.log("Ошибка удаления общей сделки:", e);
         }
@@ -342,6 +352,8 @@
         
         const savedViolations = localStorage.getItem(`violations_${currentUserId}`);
         violations = savedViolations ? JSON.parse(savedViolations) : [];
+        
+        console.log("Загружено личных сделок:", guestTrades.length);
     }
     
     function saveLocalData() {
@@ -354,6 +366,7 @@
         saveLocalData();
         renderCalendar(currentYear, currentMonth);
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
+        alert("✅ Личная сделка добавлена!");
     }
     
     function deleteLocalTrade(id) {
@@ -369,6 +382,7 @@
         saveLocalData();
         renderCalendar(currentYear, currentMonth);
         if(selectedDateForAdd === date) showTradesForDate(date);
+        alert("✅ Нарушение сохранено!");
     }
     
     function getViolationForDate(date) {
@@ -815,6 +829,7 @@
     
     // ========== ЗАПУСК ==========
     async function init() {
+        console.log("Инициализация приложения...");
         registerUser();
         populateMonthYearSelectors();
         updateAdminMenu();
