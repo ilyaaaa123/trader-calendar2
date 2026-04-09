@@ -9,41 +9,41 @@
         body {
             background-color: #0A192F;
             font-family: 'Segoe UI', Roboto, sans-serif;
-            padding: 20px;
+            padding: 12px;
             color: #F0F4F8;
         }
         .container { max-width: 900px; margin: 0 auto; }
         .card {
             background: #11243E;
-            border-radius: 32px;
-            padding: 24px;
-            margin-bottom: 24px;
+            border-radius: 24px;
+            padding: 16px;
+            margin-bottom: 16px;
             border: 1px solid #2C4F6E;
         }
         .header {
-            font-size: 28px;
+            font-size: 24px;
             font-weight: 700;
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
         }
         .sub {
             color: #8BB4D0;
-            font-size: 14px;
-            margin: 10px 0 20px 0;
+            font-size: 12px;
+            margin: 8px 0 16px 0;
             border-left: 2px solid #2E7EB8;
-            padding-left: 12px;
+            padding-left: 10px;
         }
         button {
             background: #1E6F3F;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 16px;
             border-radius: 40px;
             font-weight: bold;
             color: white;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
         }
         button.danger { background: #8B2C2C; }
@@ -74,16 +74,17 @@
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
+            gap: 6px;
             text-align: center;
-            margin-top: 16px;
+            margin-top: 12px;
         }
         .calendar-day {
-            padding: 10px;
-            border-radius: 40px;
+            padding: 8px 4px;
+            border-radius: 30px;
             cursor: pointer;
             background: #0A1A2A;
             font-weight: bold;
+            font-size: 14px;
         }
         .calendar-day.profit-day { background: #1E6F3F; }
         .calendar-day.loss-day { background: #8B2C2C; }
@@ -92,22 +93,24 @@
         
         .trade-item {
             background: #0E1C2C;
-            border-radius: 20px;
-            padding: 12px;
-            margin-bottom: 12px;
-            border-left: 4px solid #2E7EB8;
+            border-radius: 16px;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #2E7EB8;
+            font-size: 14px;
         }
         .admin-trade { border-left-color: #9b59b6; }
         .profit { color: #4ADE80; }
         .loss { color: #F87171; }
         .direction-buttons {
             display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .dir-btn {
             flex: 1;
             background: #1F3A4B;
+            padding: 10px;
         }
         .dir-active-long {
             background: #1E6F3F;
@@ -119,8 +122,8 @@
         }
         .add-buttons {
             display: flex;
-            gap: 12px;
-            margin: 16px 0;
+            gap: 10px;
+            margin: 12px 0;
         }
         .add-buttons button { flex: 1; }
         .modal {
@@ -135,81 +138,85 @@
         }
         .modal-content {
             background: #11243E;
-            border-radius: 32px;
+            border-radius: 28px;
             padding: 20px;
             width: 95%;
-            max-width: 500px;
+            max-width: 480px;
             max-height: 85%;
             overflow: auto;
         }
         .winrate-badge {
             background: #1E3A5F;
-            padding: 6px 12px;
+            padding: 4px 10px;
             border-radius: 20px;
             display: inline-block;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
+            font-size: 12px;
         }
-        hr { border-color: #2C4F6E; margin: 12px 0; }
+        hr { border-color: #2C4F6E; margin: 10px 0; }
         .month-selector {
             display: flex;
-            gap: 12px;
+            gap: 8px;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
-        .month-selector select { width: auto; margin-bottom: 0; padding: 8px 12px; font-size: 16px; }
+        .month-selector select { width: auto; margin-bottom: 0; padding: 8px 12px; font-size: 14px; }
         .violation-note {
             background: #8B2C2C;
-            padding: 8px;
-            border-radius: 16px;
-            margin-top: 8px;
-            font-size: 13px;
+            padding: 6px;
+            border-radius: 12px;
+            margin-top: 6px;
+            font-size: 12px;
         }
         .dots-menu { position: relative; display: inline-block; }
         .dots-btn {
             background: none;
             border: none;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
             color: #8BB4D0;
             cursor: pointer;
-            padding: 8px;
+            padding: 6px;
             line-height: 1;
-            min-width: 44px;
-            min-height: 44px;
+            min-width: 40px;
+            min-height: 40px;
         }
         .telegram-btn {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             background: #0088cc;
             text-decoration: none;
-            padding: 10px 24px;
+            padding: 8px 20px;
             border-radius: 40px;
             color: white;
             font-weight: bold;
+            font-size: 14px;
         }
         .admin-badge {
             background: #9b59b6;
             color: white;
-            padding: 4px 12px;
+            padding: 2px 10px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 10px;
             font-weight: bold;
-            margin-left: 10px;
+            margin-left: 8px;
         }
         .action-buttons {
             display: flex;
-            gap: 10px;
+            gap: 8px;
             flex-wrap: wrap;
-            margin-top: 16px;
+            margin-top: 12px;
         }
+        .action-buttons button { flex: 1; font-size: 13px; padding: 8px; }
+        
         @media (max-width: 768px) {
-            body { padding: 12px; }
-            .card { padding: 16px; }
-            .header { font-size: 24px; }
-            .dots-btn { padding: 8px; }
-            .action-buttons button { flex: 1; font-size: 14px; padding: 10px; }
+            body { padding: 8px; }
+            .card { padding: 12px; }
+            .header { font-size: 20px; }
+            .calendar-day { padding: 6px 2px; font-size: 12px; }
+            .action-buttons button { font-size: 12px; }
         }
     </style>
 </head>
@@ -217,18 +224,18 @@
 <div class="container">
     <div class="card">
         <div class="header">
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 6px;">
                 📅 Календарь трейдера
                 <span id="adminBadge" style="display:none;" class="admin-badge">👑 Админ</span>
             </div>
             <div class="dots-menu">
                 <button class="dots-btn" id="dotsBtn" aria-label="Меню">⋮</button>
-                <div id="dropdownMenu" style="display:none; position:absolute; right:0; top:45px; background:#11243E; border-radius:20px; overflow:hidden; min-width:200px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
-                    <button id="devMenuBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">🔐 Для разработчиков</button>
+                <div id="dropdownMenu" style="display:none; position:absolute; right:0; top:40px; background:#11243E; border-radius:20px; overflow:hidden; min-width:180px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+                    <button id="devMenuBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">🔐 Для разработчиков</button>
                 </div>
             </div>
         </div>
-        <div class="sub">lifeSilya • EUR/USD, CAD/USD</div>
+        <div class="sub">lifeSilya • 14 валютных пар</div>
         
         <div class="month-selector">
             <select id="monthSelect"></select>
@@ -239,18 +246,25 @@
     </div>
     <div id="tradesPanel" class="card"></div>
     
-    <div style="text-align: center; margin-top: 20px;">
-        <a href="https://t.me/lifeSilya" target="_blank" class="telegram-btn">📱 Подписаться на Telegram-канал</a>
+    <div style="text-align: center; margin-top: 16px;">
+        <a href="https://t.me/lifeSilya" target="_blank" class="telegram-btn">📱 Telegram-канал</a>
     </div>
 </div>
 
 <div id="devModal" class="modal"><div class="modal-content"><h3>🔐 Для разработчиков</h3><p>Доступ только для администратора.</p><button id="closeDevBtn" class="secondary">Закрыть</button></div></div>
 <div id="addTradeModal" class="modal"><div class="modal-content" id="addTradeForm"></div></div>
-<div id="violationModal" class="modal"><div class="modal-content"><h3>⚠️ Нарушение риск-менеджмента</h3><textarea id="violationComment" placeholder="Опишите нарушение..." rows="3"></textarea><button id="saveViolationBtn">Сохранить</button><button id="closeViolationBtn" class="secondary">Отмена</button></div></div>
-<div id="usersModal" class="modal"><div class="modal-content"><h3>👥 Пользователи бота</h3><div id="usersList"></div><button id="closeUsersBtn" class="secondary">Закрыть</button></div></div>
+<div id="violationModal" class="modal"><div class="modal-content"><h3>⚠️ Нарушение</h3><textarea id="violationComment" placeholder="Опишите нарушение..." rows="3"></textarea><button id="saveViolationBtn">Сохранить</button><button id="closeViolationBtn" class="secondary">Отмена</button></div></div>
+<div id="usersModal" class="modal"><div class="modal-content"><h3>👥 Пользователи</h3><div id="usersList"></div><button id="closeUsersBtn" class="secondary">Закрыть</button></div></div>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
+    // ========== ВАЛЮТНЫЕ ПАРЫ ==========
+    const CURRENCY_PAIRS = [
+        "EUR/USD", "USD/JPY", "GBP/USD", "USD/CHF", "USD/CAD",
+        "AUD/USD", "NZD/USD", "EUR/GBP", "GBP/JPY", "EUR/JPY",
+        "AUD/NZD", "EUR/CHF", "CHF/JPY"
+    ];
+    
     // ========== MOCKAPI НАСТРОЙКИ ==========
     const API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/admin_trades';
     
@@ -292,17 +306,13 @@
     // ========== РАБОТА С MOCKAPI ==========
     async function loadAdminTrades() {
         try {
-            console.log("Загрузка общих сделок с:", API_URL);
             const response = await fetch(API_URL);
             if(response.ok) {
                 adminTrades = await response.json();
-                console.log("Загружено сделок:", adminTrades.length);
             } else {
-                console.log("Ошибка загрузки, статус:", response.status);
                 adminTrades = [];
             }
         } catch(e) {
-            console.log("Ошибка загрузки общих сделок:", e);
             adminTrades = [];
         }
         renderCalendar(currentYear, currentMonth);
@@ -310,7 +320,6 @@
     
     async function saveAdminTrade(trade) {
         try {
-            console.log("Отправка общей сделки:", trade);
             const response = await fetch(API_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -319,15 +328,12 @@
             if(response.ok) {
                 const newTrade = await response.json();
                 adminTrades.push(newTrade);
-                console.log("Сделка сохранена, ответ:", newTrade);
                 alert("✅ Общая сделка добавлена!");
             } else {
-                console.log("Ошибка сохранения, статус:", response.status);
-                alert("❌ Ошибка при сохранении общей сделки");
+                alert("❌ Ошибка при сохранении");
             }
         } catch(e) {
-            console.log("Ошибка сохранения общей сделки:", e);
-            alert("❌ Ошибка соединения с сервером");
+            alert("❌ Ошибка соединения");
         }
         renderCalendar(currentYear, currentMonth);
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
@@ -337,10 +343,7 @@
         try {
             await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
             adminTrades = adminTrades.filter(t => t.id != id);
-            console.log("Сделка удалена, id:", id);
-        } catch(e) {
-            console.log("Ошибка удаления общей сделки:", e);
-        }
+        } catch(e) {}
         renderCalendar(currentYear, currentMonth);
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
@@ -352,8 +355,6 @@
         
         const savedViolations = localStorage.getItem(`violations_${currentUserId}`);
         violations = savedViolations ? JSON.parse(savedViolations) : [];
-        
-        console.log("Загружено личных сделок:", guestTrades.length);
     }
     
     function saveLocalData() {
@@ -389,7 +390,6 @@
         return violations.find(v => v.date === date);
     }
     
-    // ========== ОБЩАЯ ФУНКЦИЯ ДОБАВЛЕНИЯ ==========
     function addTrade(trade, isGlobal = false) {
         if(isGlobal && isAdmin) {
             saveAdminTrade(trade);
@@ -415,12 +415,12 @@
         let allTrades = [...dayGuestTrades, ...dayAdminTrades];
         
         if(allTrades.length === 0 && !violation) {
-            let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
-                           <button id="violationFromPanelBtn" class="warning">⚠️ Добавить нарушение</button>`;
+            let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить</button>
+                           <button id="violationFromPanelBtn" class="warning">⚠️ Нарушение</button>`;
             if(isAdmin) {
-                buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Добавить общую сделку</button>`;
+                buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Общая сделка</button>`;
             }
-            panel.innerHTML = `<div><h3>📅 ${dateStr}</h3><p>📭 В этот день сделок нет.</p>
+            panel.innerHTML = `<div><h3>📅 ${dateStr}</h3><p>📭 Нет сделок.</p>
                 <div class="action-buttons">${buttons}</div>
             </div>`;
             document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, false));
@@ -440,41 +440,41 @@
         let html = `<div>
             <h3>📅 ${dateStr}</h3>
             <div class="winrate-badge">📊 Винрейт: ${winrate}% (${win}/${allTrades.length})</div>
-            <div>💰 Прибыль дня: ${profitTotal > 0 ? '+' : ''}${profitTotal.toFixed(2)} ₽</div>
-            ${violation ? `<div class="violation-note">⚠️ Нарушение: ${violation.comment}</div>` : ''}
+            <div>💰 Прибыль: ${profitTotal > 0 ? '+' : ''}${profitTotal.toFixed(2)} ₽</div>
+            ${violation ? `<div class="violation-note">⚠️ ${violation.comment}</div>` : ''}
             <hr>
         `;
         
         if(dayAdminTrades.length > 0) {
-            html += `<div style="margin: 8px 0;"><strong>👑 Общие сделки (администратор):</strong></div>`;
+            html += `<div style="margin: 6px 0;"><strong>👑 Общие сделки:</strong></div>`;
             dayAdminTrades.forEach(t => {
                 html += `<div class="trade-item admin-trade">
                     <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
                     <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ УБЫТОК: -${t.amount} ₽` : `✅ ИТОГ: ${(t.amount + t.profit).toFixed(2)} ₽ (прибыль: +${t.profit.toFixed(2)} ₽)`}</div>
+                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
                     ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                    ${isAdmin ? `<button class="danger" data-admin-id="${t.id}" style="margin-top:8px;">🗑️ Удалить</button>` : ''}
+                    ${isAdmin ? `<button class="danger" data-admin-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>` : ''}
                 </div>`;
             });
         }
         
         if(dayGuestTrades.length > 0) {
-            html += `<div style="margin: 8px 0;"><strong>📋 Мои сделки:</strong></div>`;
+            html += `<div style="margin: 6px 0;"><strong>📋 Мои сделки:</strong></div>`;
             dayGuestTrades.forEach(t => {
                 html += `<div class="trade-item">
                     <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
                     <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ УБЫТОК: -${t.amount} ₽` : `✅ ИТОГ: ${(t.amount + t.profit).toFixed(2)} ₽ (прибыль: +${t.profit.toFixed(2)} ₽)`}</div>
+                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
                     ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                    <button class="danger" data-guest-id="${t.id}" style="margin-top:8px;">🗑️ Удалить</button>
+                    <button class="danger" data-guest-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>
                 </div>`;
             });
         }
         
-        let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
-                       <button id="violationFromPanelBtn" class="warning">⚠️ Добавить/изменить нарушение</button>`;
+        let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить</button>
+                       <button id="violationFromPanelBtn" class="warning">⚠️ Нарушение</button>`;
         if(isAdmin) {
-            buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Добавить общую сделку</button>`;
+            buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Общая сделка</button>`;
         }
         html += `<hr><div class="action-buttons">${buttons}</div></div>`;
         panel.innerHTML = html;
@@ -500,13 +500,19 @@
     function openAddTradeModal(dateStr, isGlobal = false) {
         selectedDateForAdd = dateStr;
         const formDiv = document.getElementById('addTradeForm');
-        const title = isGlobal ? "➕ Добавить ОБЩУЮ сделку (увидят все)" : "➕ Добавить сделку (только для вас)";
+        const title = isGlobal ? "👑 Общая сделка (увидят все)" : "➕ Моя сделка (только вам)";
+        
+        // Создаём опции валютных пар
+        let pairOptions = '';
+        CURRENCY_PAIRS.forEach(pair => {
+            pairOptions += `<option value="${pair}">${pair}</option>`;
+        });
+        
         formDiv.innerHTML = `
             <h3>${title} на ${dateStr}</h3>
             <input type="time" id="tradeTime" value="18:00">
             <select id="tradeInstrument">
-                <option value="EUR/USD">EUR/USD</option>
-                <option value="CAD/USD">CAD/USD</option>
+                ${pairOptions}
             </select>
             <div class="direction-buttons">
                 <button id="longBtn" class="dir-btn">📈 LONG</button>
@@ -518,7 +524,7 @@
             </div>
             <div id="profitFields" style="display:none;">
                 <input type="number" inputmode="decimal" id="profitAmount" placeholder="Сумма (₽)" value="1000">
-                <input type="number" inputmode="decimal" id="profitPercent" placeholder="Процент (20-92)" value="89">
+                <input type="number" inputmode="decimal" id="profitPercent" placeholder="Процент (20-92)" value="92">
                 <div id="profitPreview" style="background:#0A2A1A; padding:10px; border-radius:20px; margin:10px 0;">💵 Итог: 0 ₽</div>
                 <textarea id="profitComment" placeholder="Комментарий"></textarea>
                 <button id="submitProfitBtn">✅ Добавить</button>
@@ -653,8 +659,8 @@
         startOffset = startOffset === 0 ? 6 : startOffset - 1;
         const daysInMonth = new Date(year, month + 1, 0).getDate();
         
-        let html = `<div style="font-size:18px; font-weight:bold; margin:16px 0 8px 0;">${monthNames[month]} ${year}</div>
-            <div class="calendar-grid"><div style="font-weight:bold;">Пн</div><div style="font-weight:bold;">Вт</div><div style="font-weight:bold;">Ср</div><div style="font-weight:bold;">Чт</div><div style="font-weight:bold;">Пт</div><div style="font-weight:bold;">Сб</div><div style="font-weight:bold;">Вс</div>`;
+        let html = `<div style="font-size:16px; font-weight:bold; margin:10px 0 6px 0;">${monthNames[month]} ${year}</div>
+            <div class="calendar-grid"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>`;
         for(let i=0; i<startOffset; i++) html += '<div></div>';
         for(let day=1; day<=daysInMonth; day++) {
             const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
@@ -688,18 +694,18 @@
         const allUsers = JSON.parse(localStorage.getItem("all_users") || "[]");
         const usersListDiv = document.getElementById('usersList');
         if(allUsers.length === 0) {
-            usersListDiv.innerHTML = "<p>Нет зарегистрированных пользователей</p>";
+            usersListDiv.innerHTML = "<p>Нет пользователей</p>";
         } else {
             let html = "";
             allUsers.forEach(u => {
                 const userTrades = JSON.parse(localStorage.getItem(`trades_${u.id}`) || "[]");
                 let totalProfit = 0, tradeCount = userTrades.length;
                 userTrades.forEach(t => totalProfit += t.profit);
-                html += `<div class="user-list-item" style="background:#0E1C2C; border-radius:16px; padding:12px; margin-bottom:8px;">
+                html += `<div style="background:#0E1C2C; border-radius:14px; padding:10px; margin-bottom:8px;">
                     <div><strong>${u.name}</strong></div>
                     <div>🆔 ${u.id}</div>
                     <div>📊 Сделок: ${tradeCount} | Прибыль: ${totalProfit > 0 ? '+' : ''}${totalProfit.toFixed(2)} ₽</div>
-                    <div>📅 Первый визит: ${u.first_seen?.slice(0,10) || '—'}</div>
+                    <div>📅 Визит: ${u.first_seen?.slice(0,10) || '—'}</div>
                 </div>`;
             });
             usersListDiv.innerHTML = html;
@@ -776,8 +782,8 @@
         const menu = document.getElementById('dropdownMenu');
         if(isAdmin) {
             menu.innerHTML = `
-                <button id="usersListBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">👥 Список пользователей</button>
-                <button id="logoutDevBtn" class="danger" style="width:100%; text-align:left; padding:12px 16px; background:#8B2C2C; border:none; color:white; font-size:16px;">🚪 Выйти из режима администратора</button>
+                <button id="usersListBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">👥 Список пользователей</button>
+                <button id="logoutDevBtn" class="danger" style="width:100%; text-align:left; padding:10px 14px; background:#8B2C2C; border:none; color:white; font-size:14px;">🚪 Выйти</button>
             `;
             document.getElementById('usersListBtn')?.addEventListener('click', () => showUsersList());
             document.getElementById('logoutDevBtn')?.addEventListener('click', () => {
@@ -786,10 +792,10 @@
                 updateAdminMenu();
                 renderCalendar(currentYear, currentMonth);
                 dropdownMenu.style.display = 'none';
-                alert("👋 Вы вышли из режима администратора");
+                alert("👋 Вы вышли");
             });
         } else {
-            menu.innerHTML = `<button id="devMenuBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">🔐 Для разработчиков</button>`;
+            menu.innerHTML = `<button id="devMenuBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">🔐 Для разработчиков</button>`;
             document.getElementById('devMenuBtn')?.addEventListener('click', () => {
                 dropdownMenu.style.display = 'none';
                 if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
@@ -805,7 +811,6 @@
         }
     }
     
-    // ========== ЗАКРЫТИЕ МОДАЛОК ==========
     document.getElementById('closeDevBtn').onclick = () => document.getElementById('devModal').style.display = 'none';
     document.getElementById('closeUsersBtn').onclick = () => document.getElementById('usersModal').style.display = 'none';
     document.getElementById('saveViolationBtn').onclick = () => {
@@ -827,9 +832,7 @@
         if(e.target === document.getElementById('usersModal')) document.getElementById('usersModal').style.display = 'none';
     };
     
-    // ========== ЗАПУСК ==========
     async function init() {
-        console.log("Инициализация приложения...");
         registerUser();
         populateMonthYearSelectors();
         updateAdminMenu();
