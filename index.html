@@ -37,7 +37,6 @@
             padding-left: 10px;
         }
         
-        /* Вкладки */
         .tabs {
             display: flex;
             gap: 8px;
@@ -101,12 +100,11 @@
             -moz-appearance: textfield;
         }
         input[type="number"]::-webkit-inner-spin-button,
-        input[number]::-webkit-outer-spin-button {
+        input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
         }
         
-        /* Таблица для калькулятора разгона */
         .calc-table {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
@@ -170,6 +168,35 @@
         .admin-trade { border-left-color: #9b59b6; }
         .profit { color: #4ADE80; }
         .loss { color: #F87171; }
+        
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+        }
+        .collapsible-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0E1C2C;
+            padding: 10px 12px;
+            border-radius: 16px;
+            margin-bottom: 8px;
+        }
+        .collapsible-header .arrow {
+            font-size: 16px;
+            transition: transform 0.2s;
+        }
+        .collapsible-header.collapsed .arrow {
+            transform: rotate(-90deg);
+        }
+        .collapsible-content {
+            display: block;
+            padding-left: 8px;
+        }
+        .collapsible-content.collapsed {
+            display: none;
+        }
+        
         .direction-buttons {
             display: flex;
             gap: 10px;
@@ -334,6 +361,18 @@
             padding: 12px;
         }
         
+        /* Стили для счётчика посетителей */
+        .visitor-counter {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #0A1A2A;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        
         @media (max-width: 768px) {
             body { padding: 8px; }
             .card { padding: 12px; }
@@ -346,6 +385,7 @@
             .calc-col { padding: 8px; }
             .calc-col .label { font-size: 10px; }
             .calc-col input { font-size: 12px; padding: 8px; }
+            .visitor-counter { font-size: 10px; padding: 2px 8px; }
         }
     </style>
 </head>
@@ -353,9 +393,10 @@
 <div class="container">
     <div class="card">
         <div class="header">
-            <div style="display: flex; align-items: center; gap: 6px;">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
                 📅 Календарь трейдера
                 <span id="adminBadge" style="display:none;" class="admin-badge">👑 Админ</span>
+                <span id="visitorCounter" class="visitor-counter">👥 Загрузка...</span>
             </div>
             <div class="dots-menu">
                 <button class="dots-btn" id="dotsBtn" aria-label="Меню">⋮</button>
@@ -366,13 +407,11 @@
         </div>
         <div class="sub">lifeSilya • 13 валютных пар</div>
         
-        <!-- Вкладки -->
         <div class="tabs">
             <button class="tab-btn active" data-tab="calendar">📅 Календарь</button>
             <button class="tab-btn" data-tab="accelerator">🚀 Разгон депозита</button>
         </div>
         
-        <!-- Вкладка Календарь -->
         <div id="tab-calendar" class="tab-content active">
             <div class="month-selector">
                 <select id="monthSelect"></select>
@@ -383,7 +422,7 @@
             
             <div class="stats-row" id="monthStats">
                 <div class="stat-card">
-                    <div class="label">👑 Общая прибыль (публичные сделки)</div>
+                    <div class="label">👑 Сделки Ильи</div>
                     <div class="value" id="publicMonthProfit">0 ₽</div>
                 </div>
                 <div class="stat-card">
@@ -393,11 +432,9 @@
             </div>
         </div>
         
-        <!-- Вкладка Разгон депозита -->
         <div id="tab-accelerator" class="tab-content">
             <div class="sub">Рассчитайте, как разогнать депозит до нужной суммы</div>
             
-            <!-- Таблица 4 колонки -->
             <div class="calc-table">
                 <div class="calc-col">
                     <div class="label">💰 Сумма депозита</div>
@@ -454,17 +491,14 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-    // ========== ВАЛЮТНЫЕ ПАРЫ ==========
     const CURRENCY_PAIRS = [
         "EUR/USD", "USD/JPY", "GBP/USD", "USD/CHF", "USD/CAD",
         "AUD/USD", "NZD/USD", "EUR/GBP", "GBP/JPY", "EUR/JPY",
         "AUD/NZD", "EUR/CHF", "CHF/JPY"
     ];
     
-    // ========== MOCKAPI НАСТРОЙКИ ==========
     const API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/admin_trades';
-    
-    // ========== АДМИНИСТРАТОР ==========
+    const VISITOR_API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/visitors';
     const ADMIN_IDS = [8326017499];
     let isAdmin = false;
     let tg = null;
@@ -490,35 +524,82 @@
         currentUserId = "demo_" + Date.now();
     }
     
-    // ========== ДАННЫЕ ==========
-    let adminTrades = [];
-    let guestTrades = [];
-    let violations = [];
-    let selectedDateForAdd = null;
-    let pendingViolationDate = null;
-    let currentYear = 2026;
-    let currentMonth = 3;
-    let selectedDayElement = null;
+    // ========== СЧЁТЧИК ПОСЕТИТЕЛЕЙ ==========
+    let visitorCount = 0;
     
-    // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
+    async function registerVisitor() {
+        try {
+            // Пытаемся получить текущий счётчик
+            let response = await fetch(VISITOR_API_URL);
+            let visitors = [];
+            if(response.ok) {
+                visitors = await response.json();
+            }
+            
+            // Проверяем, был ли уже этот пользователь
+            const existingVisitor = visitors.find(v => v.userId === currentUserId);
+            
+            if(!existingVisitor) {
+                // Новый посетитель
+                const newVisitor = {
+                    userId: currentUserId,
+                    firstVisit: new Date().toISOString(),
+                    userName: tg?.initDataUnsafe?.user?.first_name || "Аноним"
+                };
+                await fetch(VISITOR_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(newVisitor)
+                });
+            }
+            
+            // Обновляем отображение счётчика
+            await updateVisitorDisplay();
+        } catch(e) {
+            console.log("Ошибка регистрации посетителя:", e);
+            // Если MockAPI не работает, показываем локальный счётчик
+            let localCount = localStorage.getItem('visitor_count_demo') || 1;
+            document.getElementById('visitorCounter').innerHTML = `👥 ~${localCount} чел.`;
+        }
+    }
+    
+    async function updateVisitorDisplay() {
+        try {
+            const response = await fetch(VISITOR_API_URL);
+            if(response.ok) {
+                const visitors = await response.json();
+                const uniqueCount = visitors.length;
+                document.getElementById('visitorCounter').innerHTML = `👥 ${uniqueCount} чел.`;
+            } else {
+                // Если ресурс не создан, создаём его
+                await fetch(VISITOR_API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ count: 0 })
+                });
+                document.getElementById('visitorCounter').innerHTML = `👥 1 чел.`;
+            }
+        } catch(e) {
+            console.log("Ошибка получения счётчика:", e);
+            document.getElementById('visitorCounter').innerHTML = `👥 -- чел.`;
+        }
+    }
+    
+    // ========== ОСТАЛЬНЫЕ ФУНКЦИИ ==========
     function initTabs() {
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
-        
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const tabId = btn.getAttribute('data-tab');
-                
                 tabBtns.forEach(b => b.classList.remove('active'));
                 tabContents.forEach(c => c.classList.remove('active'));
-                
                 btn.classList.add('active');
                 document.getElementById(`tab-${tabId}`).classList.add('active');
             });
         });
     }
     
-    // ========== КАЛЬКУЛЯТОР РАЗГОНА ДЕПОЗИТА ==========
     function calculateAccelerator() {
         let startDeposit = parseFloat(document.getElementById('startDeposit').value);
         let targetDeposit = parseFloat(document.getElementById('targetDeposit').value);
@@ -549,11 +630,9 @@
         document.getElementById('dailyPercent').textContent = dailyPercent.toFixed(2) + '%';
         
         let dailyPlanHtml = `<div style="margin-top: 8px;"><strong>📋 План на каждый день:</strong></div>`;
-        
         if(avgPercent && avgPercent > 0 && avgPercent <= 100) {
             const tradeAmountNeeded = (dailyProfit / (avgPercent / 100)).toFixed(2);
             const tradesNeeded = Math.ceil(dailyProfit / (startDeposit * avgPercent / 100));
-            
             dailyPlanHtml += `
                 <div class="calc-result-item">
                     <span class="calc-label">💰 При средней прибыли ${avgPercent}% на сделку:</span>
@@ -577,38 +656,31 @@
                 </div>
             `;
         }
-        
         document.getElementById('dailyPlan').innerHTML = dailyPlanHtml;
         document.getElementById('calcResult').style.display = 'block';
     }
     
-    // ========== РАСЧЁТ ПРИБЫЛИ ЗА МЕСЯЦ ==========
     function calculateMonthProfit(year, month) {
         const monthStr = `${year}-${String(month+1).padStart(2,'0')}`;
-        
         let publicProfit = 0;
         adminTrades.forEach(t => {
             if(t.date.startsWith(monthStr)) {
                 publicProfit += t.profit || 0;
             }
         });
-        
         let privateProfit = 0;
         guestTrades.forEach(t => {
             if(t.date.startsWith(monthStr)) {
                 privateProfit += t.profit || 0;
             }
         });
-        
         return { publicProfit, privateProfit };
     }
     
     function updateMonthStats() {
         const { publicProfit, privateProfit } = calculateMonthProfit(currentYear, currentMonth);
-        
         const publicEl = document.getElementById('publicMonthProfit');
         const privateEl = document.getElementById('privateMonthProfit');
-        
         if(publicEl) {
             publicEl.textContent = `${publicProfit > 0 ? '+' : ''}${publicProfit.toFixed(2)} ₽`;
             publicEl.className = `value ${publicProfit >= 0 ? 'profit-positive' : 'profit-negative'}`;
@@ -619,7 +691,6 @@
         }
     }
     
-    // ========== РАБОТА С MOCKAPI ==========
     async function loadAdminTrades() {
         try {
             const response = await fetch(API_URL);
@@ -667,11 +738,9 @@
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
     
-    // ========== ЛОКАЛЬНЫЕ ДАННЫЕ ==========
     function loadLocalData() {
         const savedGuest = localStorage.getItem(`trades_${currentUserId}`);
         guestTrades = savedGuest ? JSON.parse(savedGuest) : [];
-        
         const savedViolations = localStorage.getItem(`violations_${currentUserId}`);
         violations = savedViolations ? JSON.parse(savedViolations) : [];
     }
@@ -727,7 +796,6 @@
         }
     }
     
-    // ========== ОТОБРАЖЕНИЕ ==========
     function showTradesForDate(dateStr) {
         const panel = document.getElementById('tradesPanel');
         const dayAdminTrades = adminTrades.filter(t => t.date === dateStr);
@@ -767,29 +835,51 @@
         `;
         
         if(dayAdminTrades.length > 0) {
-            html += `<div style="margin: 6px 0;"><strong>👑 Общие сделки:</strong></div>`;
-            dayAdminTrades.forEach(t => {
-                html += `<div class="trade-item admin-trade">
-                    <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
-                    <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
-                    ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                    ${isAdmin ? `<button class="danger" data-admin-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>` : ''}
-                </div>`;
-            });
+            const adminProfit = dayAdminTrades.reduce((sum, t) => sum + (t.profit || 0), 0);
+            const adminWinCount = dayAdminTrades.filter(t => t.profit > 0).length;
+            const adminWinrate = dayAdminTrades.length ? Math.round((adminWinCount/dayAdminTrades.length)*100) : 0;
+            
+            html += `<div class="collapsible">
+                <div class="collapsible-header" data-target="adminTrades">
+                    <span><strong>👑 Сделки Ильи</strong> (${dayAdminTrades.length} шт. | ${adminProfit > 0 ? '+' : ''}${adminProfit.toFixed(2)} ₽ | винрейт: ${adminWinrate}%)</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div id="adminTrades" class="collapsible-content">
+                    ${dayAdminTrades.map(t => `
+                        <div class="trade-item admin-trade">
+                            <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
+                            <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
+                            <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽ (прибыль: +${t.profit.toFixed(2)} ₽)`}</div>
+                            ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
+                            ${isAdmin ? `<button class="danger" data-admin-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>` : ''}
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
         }
         
         if(dayGuestTrades.length > 0) {
-            html += `<div style="margin: 6px 0;"><strong>📋 Мои сделки:</strong></div>`;
-            dayGuestTrades.forEach(t => {
-                html += `<div class="trade-item">
-                    <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
-                    <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
-                    ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                    <button class="danger" data-guest-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>
-                </div>`;
-            });
+            const guestProfit = dayGuestTrades.reduce((sum, t) => sum + (t.profit || 0), 0);
+            const guestWinCount = dayGuestTrades.filter(t => t.profit > 0).length;
+            const guestWinrate = dayGuestTrades.length ? Math.round((guestWinCount/dayGuestTrades.length)*100) : 0;
+            
+            html += `<div class="collapsible">
+                <div class="collapsible-header" data-target="guestTrades">
+                    <span><strong>📋 Мои сделки</strong> (${dayGuestTrades.length} шт. | ${guestProfit > 0 ? '+' : ''}${guestProfit.toFixed(2)} ₽ | винрейт: ${guestWinrate}%)</span>
+                    <span class="arrow">▼</span>
+                </div>
+                <div id="guestTrades" class="collapsible-content">
+                    ${dayGuestTrades.map(t => `
+                        <div class="trade-item">
+                            <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
+                            <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
+                            <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽ (прибыль: +${t.profit.toFixed(2)} ₽)`}</div>
+                            ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
+                            <button class="danger" data-guest-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>
+                        </div>
+                    `).join('')}
+                </div>
+            </div>`;
         }
         
         let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить</button>
@@ -799,6 +889,17 @@
         }
         html += `<hr><div class="action-buttons">${buttons}</div></div>`;
         panel.innerHTML = html;
+        
+        document.querySelectorAll('.collapsible-header').forEach(header => {
+            const targetId = header.getAttribute('data-target');
+            const content = document.getElementById(targetId);
+            if(content) {
+                header.addEventListener('click', () => {
+                    header.classList.toggle('collapsed');
+                    content.classList.toggle('collapsed');
+                });
+            }
+        });
         
         document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, false));
         document.getElementById('violationFromPanelBtn')?.addEventListener('click', () => openViolationModal(dateStr));
@@ -822,18 +923,14 @@
         selectedDateForAdd = dateStr;
         const formDiv = document.getElementById('addTradeForm');
         const title = isGlobal ? "👑 Общая сделка (увидят все)" : "➕ Моя сделка (только вам)";
-        
         let pairOptions = '';
         CURRENCY_PAIRS.forEach(pair => {
             pairOptions += `<option value="${pair}">${pair}</option>`;
         });
-        
         formDiv.innerHTML = `
             <h3>${title} на ${dateStr}</h3>
             <input type="time" id="tradeTime" value="18:00">
-            <select id="tradeInstrument">
-                ${pairOptions}
-            </select>
+            <select id="tradeInstrument">${pairOptions}</select>
             <div class="direction-buttons">
                 <button id="longBtn" class="dir-btn">📈 LONG</button>
                 <button id="shortBtn" class="dir-btn">📉 SHORT</button>
@@ -905,16 +1002,9 @@
                 if(amount <= 0) return alert("Введите сумму");
                 const profit = amount * percent / 100;
                 addTrade({
-                    id: Date.now(),
-                    date: dateStr,
-                    time: document.getElementById('tradeTime').value,
-                    instrument: document.getElementById('tradeInstrument').value,
-                    direction: direction,
-                    amount: amount,
-                    payoutPercent: percent,
-                    profit: profit,
-                    comment: comment,
-                    isLoss: false
+                    id: Date.now(), date: dateStr, time: document.getElementById('tradeTime').value,
+                    instrument: document.getElementById('tradeInstrument').value, direction: direction,
+                    amount: amount, payoutPercent: percent, profit: profit, comment: comment, isLoss: false
                 }, isGlobal);
                 document.getElementById('addTradeModal').style.display = 'none';
             };
@@ -928,16 +1018,9 @@
                 const comment = document.getElementById('lossComment').value;
                 if(amount <= 0) return alert("Введите сумму");
                 addTrade({
-                    id: Date.now(),
-                    date: dateStr,
-                    time: document.getElementById('tradeTime').value,
-                    instrument: document.getElementById('tradeInstrument').value,
-                    direction: direction,
-                    amount: amount,
-                    payoutPercent: null,
-                    profit: -amount,
-                    comment: comment,
-                    isLoss: true
+                    id: Date.now(), date: dateStr, time: document.getElementById('tradeTime').value,
+                    instrument: document.getElementById('tradeInstrument').value, direction: direction,
+                    amount: amount, payoutPercent: null, profit: -amount, comment: comment, isLoss: true
                 }, isGlobal);
                 document.getElementById('addTradeModal').style.display = 'none';
             };
@@ -954,21 +1037,16 @@
         const dayGuestTrades = guestTrades.filter(t => t.date === dateStr);
         const violation = getViolationForDate(dateStr);
         let allTrades = [...dayGuestTrades, ...dayAdminTrades];
-        
         if(allTrades.length === 0 && !violation) return '';
-        
         const hasAdminTrades = dayAdminTrades.length > 0;
         const hasComments = allTrades.some(t => t.comment && t.comment.trim() !== '') || violation;
         if(hasComments) return 'comment-day';
-        
         let profitTotal = 0;
         allTrades.forEach(t => profitTotal += t.profit);
-        
         if(hasAdminTrades && profitTotal > 0) return 'admin-day';
         if(hasAdminTrades && profitTotal < 0) return 'loss-day';
         if(profitTotal > 0) return 'profit-day';
         if(profitTotal < 0) return 'loss-day';
-        
         return '';
     }
     
@@ -978,7 +1056,6 @@
         let startOffset = firstDay.getDay();
         startOffset = startOffset === 0 ? 6 : startOffset - 1;
         const daysInMonth = new Date(year, month + 1, 0).getDate();
-        
         let html = `<div style="font-size:16px; font-weight:bold; margin:10px 0 6px 0;">${monthNames[month]} ${year}</div>
             <div class="calendar-grid"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>`;
         for(let i=0; i<startOffset; i++) html += '<div></div>';
@@ -989,14 +1066,11 @@
         }
         html += `</div>`;
         document.getElementById('calendarContainer').innerHTML = html;
-        
         document.querySelectorAll('.calendar-day').forEach(el => {
             const date = el.getAttribute('data-date');
             if(date) {
                 el.onclick = () => {
-                    if(selectedDayElement) {
-                        selectedDayElement.classList.remove('selected-day');
-                    }
+                    if(selectedDayElement) selectedDayElement.classList.remove('selected-day');
                     el.classList.add('selected-day');
                     selectedDayElement = el;
                     selectedDateForAdd = date;
@@ -1004,7 +1078,6 @@
                 };
             }
         });
-        
         const defaultDate = `${year}-${String(month+1).padStart(2,'0')}-01`;
         const defaultDayElement = document.querySelector(`.calendar-day[data-date="${defaultDate}"]`);
         if(defaultDayElement) {
@@ -1077,24 +1150,20 @@
         };
     }
     
-    // ========== МОБИЛЬНОЕ МЕНЮ ==========
     const dotsBtn = document.getElementById('dotsBtn');
     const dropdownMenu = document.getElementById('dropdownMenu');
-    
     if(dotsBtn) {
         dotsBtn.addEventListener('click', function(e) {
             e.stopPropagation();
             dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
         });
     }
-    
     document.addEventListener('click', function(e) {
         if(dropdownMenu && !dotsBtn?.contains(e.target)) {
             dropdownMenu.style.display = 'none';
         }
     });
     
-    // ========== СКРЫТЫЙ ВХОД ==========
     const headerTitle = document.querySelector('.header > div:first-child');
     if(headerTitle) {
         let pressTimer;
@@ -1165,7 +1234,6 @@
         pendingViolationDate = null;
     };
     
-    // Калькулятор
     document.getElementById('calculateBtn').addEventListener('click', calculateAccelerator);
     
     window.onclick = (e) => {
@@ -1175,6 +1243,15 @@
         if(e.target === document.getElementById('usersModal')) document.getElementById('usersModal').style.display = 'none';
     };
     
+    let adminTrades = [];
+    let guestTrades = [];
+    let violations = [];
+    let selectedDateForAdd = null;
+    let pendingViolationDate = null;
+    let currentYear = 2026;
+    let currentMonth = 3;
+    let selectedDayElement = null;
+    
     async function init() {
         registerUser();
         populateMonthYearSelectors();
@@ -1183,6 +1260,7 @@
         loadLocalData();
         await loadAdminTrades();
         renderCalendar(currentYear, currentMonth);
+        await registerVisitor();
     }
     
     init();
