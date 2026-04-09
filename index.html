@@ -36,6 +36,37 @@
             border-left: 2px solid #2E7EB8;
             padding-left: 10px;
         }
+        
+        /* Вкладки */
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+            border-bottom: 1px solid #2C4F6E;
+            padding-bottom: 8px;
+        }
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: bold;
+            color: #8BB4D0;
+            cursor: pointer;
+            border-radius: 30px;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: #2C5282;
+            color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        
         button {
             background: #1E6F3F;
             border: none;
@@ -61,14 +92,45 @@
             color: white;
             font-size: 16px;
         }
+        input::placeholder {
+            color: #5a7a9a;
+            font-size: 13px;
+        }
         input[type="number"] {
             inputmode: decimal;
             -moz-appearance: textfield;
         }
         input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
+        input[number]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
+        }
+        
+        /* Таблица для калькулятора разгона */
+        .calc-table {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .calc-col {
+            background: #0A1A2A;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #2C4F6E;
+        }
+        .calc-col .label {
+            font-size: 12px;
+            color: #8BB4D0;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .calc-col input {
+            text-align: center;
+            margin-bottom: 0;
+            font-size: 14px;
+            padding: 10px;
         }
         
         .calendar-grid {
@@ -91,7 +153,6 @@
         .calendar-day.loss-day { background: #8B2C2C; }
         .calendar-day.comment-day { background: #B1661A; }
         .calendar-day.admin-day { background: #9b59b6; }
-        /* Подсветка выбранного дня */
         .calendar-day.selected-day {
             background: #3B82F6 !important;
             box-shadow: 0 0 0 2px #90E0FF;
@@ -244,6 +305,35 @@
         .stat-card .value.profit-positive { color: #4ADE80; }
         .stat-card .value.profit-negative { color: #F87171; }
         
+        .calc-result {
+            background: #0A2A1A;
+            padding: 16px;
+            border-radius: 20px;
+            margin-top: 16px;
+        }
+        .calc-result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #2C4F6E;
+        }
+        .calc-result-item:last-child {
+            border-bottom: none;
+        }
+        .calc-label {
+            color: #8BB4D0;
+        }
+        .calc-value {
+            font-weight: bold;
+            color: #4ADE80;
+        }
+        .daily-plan {
+            margin-top: 16px;
+            background: #0E1C2C;
+            border-radius: 16px;
+            padding: 12px;
+        }
+        
         @media (max-width: 768px) {
             body { padding: 8px; }
             .card { padding: 12px; }
@@ -251,6 +341,11 @@
             .calendar-day { padding: 6px 2px; font-size: 12px; }
             .action-buttons button { font-size: 12px; }
             .stat-card .value { font-size: 16px; }
+            .tab-btn { padding: 6px 12px; font-size: 12px; }
+            .calc-table { gap: 6px; }
+            .calc-col { padding: 8px; }
+            .calc-col .label { font-size: 10px; }
+            .calc-col input { font-size: 12px; padding: 8px; }
         }
     </style>
 </head>
@@ -271,21 +366,77 @@
         </div>
         <div class="sub">lifeSilya • 13 валютных пар</div>
         
-        <div class="month-selector">
-            <select id="monthSelect"></select>
-            <select id="yearSelect"></select>
-            <button id="refreshCalendarBtn">Показать</button>
+        <!-- Вкладки -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="calendar">📅 Календарь</button>
+            <button class="tab-btn" data-tab="accelerator">🚀 Разгон депозита</button>
         </div>
-        <div id="calendarContainer"></div>
         
-        <div class="stats-row" id="monthStats">
-            <div class="stat-card">
-                <div class="label">👑 Общая прибыль (публичные сделки)</div>
-                <div class="value" id="publicMonthProfit">0 ₽</div>
+        <!-- Вкладка Календарь -->
+        <div id="tab-calendar" class="tab-content active">
+            <div class="month-selector">
+                <select id="monthSelect"></select>
+                <select id="yearSelect"></select>
+                <button id="refreshCalendarBtn">Показать</button>
             </div>
-            <div class="stat-card">
-                <div class="label">📋 Моя прибыль (личные сделки)</div>
-                <div class="value" id="privateMonthProfit">0 ₽</div>
+            <div id="calendarContainer"></div>
+            
+            <div class="stats-row" id="monthStats">
+                <div class="stat-card">
+                    <div class="label">👑 Общая прибыль (публичные сделки)</div>
+                    <div class="value" id="publicMonthProfit">0 ₽</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">📋 Моя прибыль (личные сделки)</div>
+                    <div class="value" id="privateMonthProfit">0 ₽</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Вкладка Разгон депозита -->
+        <div id="tab-accelerator" class="tab-content">
+            <div class="sub">Рассчитайте, как разогнать депозит до нужной суммы</div>
+            
+            <!-- Таблица 4 колонки -->
+            <div class="calc-table">
+                <div class="calc-col">
+                    <div class="label">💰 Сумма депозита</div>
+                    <input type="number" id="startDeposit" placeholder="Начальная сумма" value="">
+                </div>
+                <div class="calc-col">
+                    <div class="label">🎯 Конечная сумма разгона</div>
+                    <input type="number" id="targetDeposit" placeholder="Целевая сумма" value="">
+                </div>
+                <div class="calc-col">
+                    <div class="label">📅 Количество дней для разгона</div>
+                    <input type="number" id="daysCount" placeholder="Дней" value="">
+                </div>
+                <div class="calc-col">
+                    <div class="label">📊 Средний процент выплаты</div>
+                    <input type="number" id="avgProfitPercent" placeholder="% на сделку (опционально)" value="">
+                </div>
+            </div>
+            
+            <button id="calculateBtn" class="purple">📊 Рассчитать</button>
+            
+            <div id="calcResult" class="calc-result" style="display: none;">
+                <div class="calc-result-item">
+                    <span class="calc-label">📈 Общий рост:</span>
+                    <span class="calc-value" id="totalGrowth">0%</span>
+                </div>
+                <div class="calc-result-item">
+                    <span class="calc-label">💰 Необходимая прибыль:</span>
+                    <span class="calc-value" id="neededProfit">0 ₽</span>
+                </div>
+                <div class="calc-result-item">
+                    <span class="calc-label">📊 Нужно зарабатывать в день:</span>
+                    <span class="calc-value" id="dailyProfit">0 ₽</span>
+                </div>
+                <div class="calc-result-item">
+                    <span class="calc-label">📈 Нужно зарабатывать в день (%):</span>
+                    <span class="calc-value" id="dailyPercent">0%</span>
+                </div>
+                <div id="dailyPlan" class="daily-plan"></div>
             </div>
         </div>
     </div>
@@ -347,7 +498,89 @@
     let pendingViolationDate = null;
     let currentYear = 2026;
     let currentMonth = 3;
-    let selectedDayElement = null; // для хранения выбранного дня
+    let selectedDayElement = null;
+    
+    // ========== ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК ==========
+    function initTabs() {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                
+                tabBtns.forEach(b => b.classList.remove('active'));
+                tabContents.forEach(c => c.classList.remove('active'));
+                
+                btn.classList.add('active');
+                document.getElementById(`tab-${tabId}`).classList.add('active');
+            });
+        });
+    }
+    
+    // ========== КАЛЬКУЛЯТОР РАЗГОНА ДЕПОЗИТА ==========
+    function calculateAccelerator() {
+        let startDeposit = parseFloat(document.getElementById('startDeposit').value);
+        let targetDeposit = parseFloat(document.getElementById('targetDeposit').value);
+        let days = parseInt(document.getElementById('daysCount').value);
+        let avgPercent = parseFloat(document.getElementById('avgProfitPercent').value);
+        
+        if(isNaN(startDeposit) || startDeposit <= 0) {
+            alert("Введите начальную сумму депозита");
+            return;
+        }
+        if(isNaN(targetDeposit) || targetDeposit <= startDeposit) {
+            alert("Целевая сумма должна быть больше начального депозита");
+            return;
+        }
+        if(isNaN(days) || days <= 0) {
+            alert("Введите количество дней");
+            return;
+        }
+        
+        const neededProfit = targetDeposit - startDeposit;
+        const totalGrowth = ((targetDeposit - startDeposit) / startDeposit) * 100;
+        const dailyProfit = neededProfit / days;
+        const dailyPercent = (dailyProfit / startDeposit) * 100;
+        
+        document.getElementById('totalGrowth').textContent = totalGrowth.toFixed(2) + '%';
+        document.getElementById('neededProfit').textContent = neededProfit.toFixed(2) + ' ₽';
+        document.getElementById('dailyProfit').textContent = dailyProfit.toFixed(2) + ' ₽';
+        document.getElementById('dailyPercent').textContent = dailyPercent.toFixed(2) + '%';
+        
+        let dailyPlanHtml = `<div style="margin-top: 8px;"><strong>📋 План на каждый день:</strong></div>`;
+        
+        if(avgPercent && avgPercent > 0 && avgPercent <= 100) {
+            const tradeAmountNeeded = (dailyProfit / (avgPercent / 100)).toFixed(2);
+            const tradesNeeded = Math.ceil(dailyProfit / (startDeposit * avgPercent / 100));
+            
+            dailyPlanHtml += `
+                <div class="calc-result-item">
+                    <span class="calc-label">💰 При средней прибыли ${avgPercent}% на сделку:</span>
+                </div>
+                <div class="calc-result-item">
+                    <span class="calc-label">💵 Сумма сделки в день:</span>
+                    <span class="calc-value">${tradeAmountNeeded} ₽</span>
+                </div>
+                <div class="calc-result-item">
+                    <span class="calc-label">📊 Количество сделок в день:</span>
+                    <span class="calc-value">${tradesNeeded} сделок</span>
+                </div>
+            `;
+        } else {
+            dailyPlanHtml += `
+                <div class="calc-result-item">
+                    <span class="calc-label">💡 Укажите средний % прибыли на сделку,</span>
+                </div>
+                <div class="calc-result-item">
+                    <span class="calc-label">чтобы рассчитать сумму и количество сделок</span>
+                </div>
+            `;
+        }
+        
+        document.getElementById('dailyPlan').innerHTML = dailyPlanHtml;
+        document.getElementById('calcResult').style.display = 'block';
+    }
     
     // ========== РАСЧЁТ ПРИБЫЛИ ЗА МЕСЯЦ ==========
     function calculateMonthProfit(year, month) {
@@ -757,16 +990,13 @@
         html += `</div>`;
         document.getElementById('calendarContainer').innerHTML = html;
         
-        // Добавляем обработчики с подсветкой выбранного дня
         document.querySelectorAll('.calendar-day').forEach(el => {
             const date = el.getAttribute('data-date');
             if(date) {
                 el.onclick = () => {
-                    // Убираем подсветку с предыдущего выбранного дня
                     if(selectedDayElement) {
                         selectedDayElement.classList.remove('selected-day');
                     }
-                    // Добавляем подсветку новому дню
                     el.classList.add('selected-day');
                     selectedDayElement = el;
                     selectedDateForAdd = date;
@@ -776,7 +1006,6 @@
         });
         
         const defaultDate = `${year}-${String(month+1).padStart(2,'0')}-01`;
-        // Подсвечиваем первый день месяца по умолчанию
         const defaultDayElement = document.querySelector(`.calendar-day[data-date="${defaultDate}"]`);
         if(defaultDayElement) {
             if(selectedDayElement) selectedDayElement.classList.remove('selected-day');
@@ -935,6 +1164,10 @@
         document.getElementById('violationModal').style.display = 'none';
         pendingViolationDate = null;
     };
+    
+    // Калькулятор
+    document.getElementById('calculateBtn').addEventListener('click', calculateAccelerator);
+    
     window.onclick = (e) => {
         if(e.target === document.getElementById('devModal')) document.getElementById('devModal').style.display = 'none';
         if(e.target === document.getElementById('addTradeModal')) document.getElementById('addTradeModal').style.display = 'none';
@@ -946,6 +1179,7 @@
         registerUser();
         populateMonthYearSelectors();
         updateAdminMenu();
+        initTabs();
         loadLocalData();
         await loadAdminTrades();
         renderCalendar(currentYear, currentMonth);
