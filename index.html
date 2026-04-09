@@ -39,25 +39,39 @@
         button {
             background: #1E6F3F;
             border: none;
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 40px;
             font-weight: bold;
             color: white;
-            font-size: 14px;
+            font-size: 16px;
             cursor: pointer;
         }
         button.danger { background: #8B2C2C; }
         button.secondary { background: #2C5282; }
         button.warning { background: #B1661A; }
+        
+        /* Исправление для мобильных устройств — убираем масштабирование */
         input, select, textarea {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 12px;
             background: #0A1A2A;
             border: 1px solid #2E4A6A;
             border-radius: 20px;
             color: white;
+            font-size: 16px;
         }
+        /* Цифровая клавиатура для полей с числами */
+        input[type="number"] {
+            inputmode: numeric;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]::-webkit-inner-spin-button,
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -70,9 +84,14 @@
             border-radius: 40px;
             cursor: pointer;
             background: #0A1A2A;
+            font-weight: bold;
         }
-        .calendar-day.trade-day { background: #1E6F3F; }
-        .calendar-day.loss-day { background: #B1661A; }
+        /* Цветовая индикация дней */
+        .calendar-day.profit-day { background: #1E6F3F; }      /* Зелёный — плюс */
+        .calendar-day.loss-day { background: #8B2C2C; }       /* Красный — минус */
+        .calendar-day.comment-day { background: #B1661A; }    /* Жёлтый/оранжевый — есть комментарий */
+        .calendar-day.admin-day { background: #9b59b6; }      /* Фиолетовый — сделки администратора */
+        
         .trade-item {
             background: #0E1C2C;
             border-radius: 20px;
@@ -80,6 +99,7 @@
             margin-bottom: 12px;
             border-left: 4px solid #2E7EB8;
         }
+        .admin-trade { border-left-color: #9b59b6; }
         .profit { color: #4ADE80; }
         .loss { color: #F87171; }
         .direction-buttons {
@@ -139,7 +159,7 @@
             flex-wrap: wrap;
             margin-bottom: 20px;
         }
-        .month-selector select { width: auto; margin-bottom: 0; }
+        .month-selector select { width: auto; margin-bottom: 0; padding: 8px 12px; font-size: 16px; }
         .violation-note {
             background: #8B2C2C;
             padding: 8px;
@@ -172,15 +192,14 @@
             font-weight: bold;
         }
         .admin-badge {
-            background: #FACC15;
-            color: #0A192F;
+            background: #9b59b6;
+            color: white;
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
             margin-left: 10px;
         }
-        /* Для мобильных устройств */
         @media (max-width: 768px) {
             body { padding: 12px; }
             .card { padding: 16px; }
@@ -357,33 +376,36 @@
             <hr>
         `;
         
+        // Сделки администратора (видны всем)
         if(dayAdminTrades.length > 0) {
-            html += `<div><strong>👑 Общие сделки (от администратора):</strong></div>`;
+            html += `<div style="margin: 8px 0;"><strong>👑 Общие сделки (администратор):</strong></div>`;
             dayAdminTrades.forEach(t => {
-                html += `<div class="trade-item">
+                html += `<div class="trade-item admin-trade">
                     <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
                     <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ УБЫТОК: -${t.amount} ₽` : `✅ ИТОГ: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
+                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ УБЫТОК: -${t.amount} ₽` : `✅ ИТОГ: ${(t.amount + t.profit).toFixed(2)} ₽ (прибыль: +${t.profit.toFixed(2)} ₽)`}</div>
                     ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                    ${isAdmin ? `<button class="danger" data-admin-id="${t.id}">🗑️ Удалить</button>` : ''}
+                    ${isAdmin ? `<button class="danger" data-admin-id="${t.id}" style="margin-top:8px;">🗑️ Удалить</button>` : ''}
                 </div>`;
             });
         }
         
+        // Личные сделки пользователя
         if(dayGuestTrades.length > 0) {
-            html += `<div><strong>📋 Мои сделки:</strong></div>`;
+            html += `<div style="margin: 8px 0;"><strong>📋 Мои сделки:</strong></div>`;
             dayGuestTrades.forEach(t => {
                 html += `<div class="trade-item">
                     <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
                     <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ УБЫТОК: -${t.amount} ₽` : `✅ ИТОГ: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
+                    <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ УБЫТОК: -${t.amount} ₽` : `✅ ИТОГ: ${(t.amount + t.profit).toFixed(2)} ₽ (прибыль: +${t.profit.toFixed(2)} ₽)`}</div>
                     ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                    <button class="danger" data-guest-id="${t.id}">🗑️ Удалить</button>
+                    <button class="danger" data-guest-id="${t.id}" style="margin-top:8px;">🗑️ Удалить</button>
                 </div>`;
             });
         }
         
-        html += `<hr><button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
+        html += `<hr>
+            <button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
             <button id="violationFromPanelBtn" class="warning">⚠️ Добавить/изменить нарушение</button>
         </div>`;
         panel.innerHTML = html;
@@ -408,7 +430,7 @@
     function openAddTradeModal(dateStr, isGlobal = false) {
         selectedDateForAdd = dateStr;
         const formDiv = document.getElementById('addTradeForm');
-        const title = isGlobal ? "➕ Добавить ОБЩУЮ сделку" : "➕ Добавить сделку";
+        const title = isGlobal ? "➕ Добавить ОБЩУЮ сделку (увидят все)" : "➕ Добавить сделку (только для вас)";
         formDiv.innerHTML = `
             <h3>${title} на ${dateStr}</h3>
             <input type="time" id="tradeTime" value="18:00">
@@ -425,14 +447,14 @@
                 <button id="lossTypeBtn" class="danger">❌ Убыток</button>
             </div>
             <div id="profitFields" style="display:none;">
-                <input type="number" id="profitAmount" placeholder="Сумма (₽)" value="1000">
-                <input type="number" id="profitPercent" placeholder="Процент (20-92)" value="89">
+                <input type="number" inputmode="numeric" id="profitAmount" placeholder="Сумма (₽)" value="1000">
+                <input type="number" inputmode="numeric" id="profitPercent" placeholder="Процент (20-92)" value="89">
                 <div id="profitPreview" style="background:#0A2A1A; padding:10px; border-radius:20px; margin:10px 0;">💵 Итог: 0 ₽</div>
                 <textarea id="profitComment" placeholder="Комментарий"></textarea>
                 <button id="submitProfitBtn">✅ Добавить</button>
             </div>
             <div id="lossFields" style="display:none;">
-                <input type="number" id="lossAmount" placeholder="Сумма убытка (₽)" value="1000">
+                <input type="number" inputmode="numeric" id="lossAmount" placeholder="Сумма убытка (₽)" value="1000">
                 <textarea id="lossComment" placeholder="Комментарий"></textarea>
                 <button id="submitLossBtn" class="danger">❌ Добавить убыток</button>
             </div>
@@ -517,18 +539,34 @@
         document.getElementById('addTradeModal').style.display = 'flex';
     }
     
-    function renderCalendar(year, month) {
-        const tradeDaysSet = new Set();
-        const lossDaysSet = new Set();
-        const allTrades = [...guestTrades, ...adminTrades];
-        const dayProfit = {};
-        allTrades.forEach(t => {
-            if(!dayProfit[t.date]) dayProfit[t.date] = 0;
-            dayProfit[t.date] += t.profit;
-        });
-        allTrades.forEach(t => tradeDaysSet.add(t.date));
-        for(const date in dayProfit) if(dayProfit[date] < 0) lossDaysSet.add(date);
+    function getDayColorClass(dateStr) {
+        const dayAdminTrades = adminTrades.filter(t => t.date === dateStr);
+        const dayGuestTrades = guestTrades.filter(t => t.date === dateStr);
+        const violation = getViolationForDate(dateStr);
+        let allTrades = [...dayGuestTrades, ...dayAdminTrades];
         
+        if(allTrades.length === 0 && !violation) return '';
+        
+        // Проверяем, есть ли сделки администратора
+        const hasAdminTrades = dayAdminTrades.length > 0;
+        
+        // Есть комментарий к сделкам
+        const hasComments = allTrades.some(t => t.comment && t.comment.trim() !== '') || violation;
+        if(hasComments) return 'comment-day';
+        
+        // Проверяем прибыльность дня
+        let profitTotal = 0;
+        allTrades.forEach(t => profitTotal += t.profit);
+        
+        if(hasAdminTrades && profitTotal > 0) return 'admin-day';      // Фиолетовый — сделки админа в плюс
+        if(hasAdminTrades && profitTotal < 0) return 'loss-day';       // Красный — сделки админа в минус
+        if(profitTotal > 0) return 'profit-day';                       // Зелёный — плюс
+        if(profitTotal < 0) return 'loss-day';                         // Красный — минус
+        
+        return '';
+    }
+    
+    function renderCalendar(year, month) {
         const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
         const firstDay = new Date(year, month, 1);
         let startOffset = firstDay.getDay();
@@ -540,10 +578,8 @@
         for(let i=0; i<startOffset; i++) html += '<div></div>';
         for(let day=1; day<=daysInMonth; day++) {
             const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-            let dayClass = '';
-            if(lossDaysSet.has(dateStr)) dayClass = 'loss-day';
-            else if(tradeDaysSet.has(dateStr)) dayClass = 'trade-day';
-            html += `<div class="calendar-day ${dayClass}" data-date="${dateStr}">${day}</div>`;
+            const colorClass = getDayColorClass(dateStr);
+            html += `<div class="calendar-day ${colorClass}" data-date="${dateStr}">${day}</div>`;
         }
         html += `</div>`;
         document.getElementById('calendarContainer').innerHTML = html;
@@ -566,7 +602,7 @@
                 const userTrades = JSON.parse(localStorage.getItem(`trades_${u.id}`) || "[]");
                 let totalProfit = 0, tradeCount = userTrades.length;
                 userTrades.forEach(t => totalProfit += t.profit);
-                html += `<div class="user-list-item">
+                html += `<div class="user-list-item" style="background:#0E1C2C; border-radius:16px; padding:12px; margin-bottom:8px;">
                     <div><strong>${u.name}</strong></div>
                     <div>🆔 ${u.id}</div>
                     <div>📊 Сделок: ${tradeCount} | Прибыль: ${totalProfit > 0 ? '+' : ''}${totalProfit.toFixed(2)} ₽</div>
@@ -603,7 +639,7 @@
         };
     }
     
-    // ========== МОБИЛЬНОЕ МЕНЮ (ТРИ ТОЧКИ) ==========
+    // ========== МОБИЛЬНОЕ МЕНЮ ==========
     const dotsBtn = document.getElementById('dotsBtn');
     const dropdownMenu = document.getElementById('dropdownMenu');
     
@@ -618,56 +654,33 @@
         });
     }
     
-    // Закрываем меню при клике вне его
     document.addEventListener('click', function(e) {
         if(dropdownMenu && !dotsBtn?.contains(e.target)) {
             dropdownMenu.style.display = 'none';
         }
     });
     
-    // ========== СКРЫТЫЙ ВХОД (ДОЛГОЕ НАЖАТИЕ НА ЗАГОЛОВОК) ==========
+    // ========== СКРЫТЫЙ ВХОД (ДОЛГОЕ НАЖАТИЕ) ==========
     const headerTitle = document.querySelector('.header > div:first-child');
     if(headerTitle) {
         let pressTimer;
-        headerTitle.addEventListener('touchstart', function(e) {
-            pressTimer = setTimeout(function() {
-                if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
-                    isAdmin = true;
-                    document.getElementById('adminBadge').style.display = 'inline-block';
-                    updateAdminMenu();
-                    renderCalendar(currentYear, currentMonth);
-                    alert("✅ Режим администратора активирован");
-                } else {
-                    alert("⛔ Доступ только для администратора");
-                }
-            }, 1000);
-        });
-        headerTitle.addEventListener('touchend', function() {
-            clearTimeout(pressTimer);
-        });
-        headerTitle.addEventListener('touchmove', function() {
-            clearTimeout(pressTimer);
-        });
-        // Для мыши (компьютер)
-        headerTitle.addEventListener('mousedown', function(e) {
-            pressTimer = setTimeout(function() {
-                if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
-                    isAdmin = true;
-                    document.getElementById('adminBadge').style.display = 'inline-block';
-                    updateAdminMenu();
-                    renderCalendar(currentYear, currentMonth);
-                    alert("✅ Режим администратора активирован");
-                } else {
-                    alert("⛔ Доступ только для администратора");
-                }
-            }, 1000);
-        });
-        headerTitle.addEventListener('mouseup', function() {
-            clearTimeout(pressTimer);
-        });
-        headerTitle.addEventListener('mouseleave', function() {
-            clearTimeout(pressTimer);
-        });
+        const activateAdmin = () => {
+            if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
+                isAdmin = true;
+                document.getElementById('adminBadge').style.display = 'inline-block';
+                updateAdminMenu();
+                renderCalendar(currentYear, currentMonth);
+                alert("✅ Режим администратора активирован");
+            } else {
+                alert("⛔ Доступ только для администратора");
+            }
+        };
+        headerTitle.addEventListener('touchstart', (e) => { pressTimer = setTimeout(activateAdmin, 1000); });
+        headerTitle.addEventListener('touchend', () => { clearTimeout(pressTimer); });
+        headerTitle.addEventListener('touchmove', () => { clearTimeout(pressTimer); });
+        headerTitle.addEventListener('mousedown', () => { pressTimer = setTimeout(activateAdmin, 1000); });
+        headerTitle.addEventListener('mouseup', () => { clearTimeout(pressTimer); });
+        headerTitle.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
     }
     
     function updateAdminMenu() {
