@@ -6,12 +6,53 @@
     <title>Календарь трейдера — lifeSilya</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        /* Тёмная тема (по умолчанию) */
         body {
             background-color: #0A192F;
             font-family: 'Segoe UI', Roboto, sans-serif;
             padding: 12px;
             color: #F0F4F8;
+            transition: all 0.3s ease;
         }
+        body.light-theme {
+            background-color: #f0f4f8;
+            color: #0A192F;
+        }
+        body.light-theme .card {
+            background: #ffffff;
+            border-color: #d0d8e8;
+        }
+        body.light-theme .sub {
+            color: #4a6a8a;
+            border-left-color: #2E7EB8;
+        }
+        body.light-theme .calendar-day,
+        body.light-theme .trade-item,
+        body.light-theme .collapsible-header,
+        body.light-theme .stat-card,
+        body.light-theme .calc-col,
+        body.light-theme .calc-result,
+        body.light-theme .daily-plan,
+        body.light-theme input, 
+        body.light-theme select, 
+        body.light-theme textarea {
+            background: #e8edf5;
+            color: #0A192F;
+            border-color: #c0c8d8;
+        }
+        body.light-theme button {
+            background: #1E6F3F;
+            color: white;
+        }
+        body.light-theme .dots-btn {
+            color: #2C5282;
+        }
+        body.light-theme .visitor-counter {
+            background: #e8edf5;
+            color: #0A192F;
+        }
+        
         .container { max-width: 900px; margin: 0 auto; }
         .card {
             background: #11243E;
@@ -19,6 +60,7 @@
             padding: 16px;
             margin-bottom: 16px;
             border: 1px solid #2C4F6E;
+            transition: all 0.3s ease;
         }
         .header {
             font-size: 24px;
@@ -103,6 +145,15 @@
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
             margin: 0;
+        }
+        
+        .theme-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 6px;
+            min-width: 40px;
         }
         
         .calc-table {
@@ -361,7 +412,6 @@
             padding: 12px;
         }
         
-        /* Стили для счётчика посетителей */
         .visitor-counter {
             display: inline-flex;
             align-items: center;
@@ -371,6 +421,18 @@
             border-radius: 40px;
             font-size: 12px;
             margin-left: 8px;
+        }
+        
+        .loss-limit-settings {
+            margin-top: 16px;
+            padding: 12px;
+            background: #0A1A2A;
+            border-radius: 20px;
+        }
+        .loss-limit-settings .label {
+            font-size: 12px;
+            color: #8BB4D0;
+            margin-bottom: 6px;
         }
         
         @media (max-width: 768px) {
@@ -398,10 +460,13 @@
                 <span id="adminBadge" style="display:none;" class="admin-badge">👑 Админ</span>
                 <span id="visitorCounter" class="visitor-counter">👥 Загрузка...</span>
             </div>
-            <div class="dots-menu">
-                <button class="dots-btn" id="dotsBtn" aria-label="Меню">⋮</button>
-                <div id="dropdownMenu" style="display:none; position:absolute; right:0; top:40px; background:#11243E; border-radius:20px; overflow:hidden; min-width:180px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
-                    <button id="devMenuBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">🔐 Для разработчиков</button>
+            <div style="display: flex; gap: 8px;">
+                <button id="themeToggle" class="theme-btn" title="Сменить тему">🌙</button>
+                <div class="dots-menu">
+                    <button class="dots-btn" id="dotsBtn" aria-label="Меню">⋮</button>
+                    <div id="dropdownMenu" style="display:none; position:absolute; right:0; top:40px; background:#11243E; border-radius:20px; overflow:hidden; min-width:180px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+                        <button id="devMenuBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">🔐 Для разработчиков</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -410,6 +475,7 @@
         <div class="tabs">
             <button class="tab-btn active" data-tab="calendar">📅 Календарь</button>
             <button class="tab-btn" data-tab="accelerator">🚀 Разгон депозита</button>
+            <button class="tab-btn" data-tab="stats">📊 Статистика</button>
         </div>
         
         <div id="tab-calendar" class="tab-content active">
@@ -476,6 +542,41 @@
                 <div id="dailyPlan" class="daily-plan"></div>
             </div>
         </div>
+        
+        <div id="tab-stats" class="tab-content">
+            <div class="sub">Анализ торговли и дисциплина</div>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="label">📊 Дисциплина (соблюдение риск-менеджмента)</div>
+                    <div class="value" id="disciplineToday">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">⚠️ Лимит убытка в день</div>
+                    <div class="value" id="lossLimitDisplay">Не установлен</div>
+                </div>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="label">📊 Дисциплина за месяц</div>
+                    <div class="value" id="disciplineMonth">0%</div>
+                </div>
+                <div class="stat-card">
+                    <div class="label">📊 Дисциплина за всё время</div>
+                    <div class="value" id="disciplineAll">0%</div>
+                </div>
+            </div>
+            
+            <div class="loss-limit-settings">
+                <div class="label">⚙️ Настройка лимита убытка в день</div>
+                <input type="number" id="lossLimitInput" placeholder="Максимальный убыток в день (₽)" value="">
+                <button id="saveLossLimitBtn" class="secondary">💾 Сохранить лимит</button>
+            </div>
+            
+            <hr>
+            <div id="disciplineDetails" style="margin-top: 12px;"></div>
+        </div>
     </div>
     <div id="tradesPanel" class="card"></div>
     
@@ -488,6 +589,7 @@
 <div id="addTradeModal" class="modal"><div class="modal-content" id="addTradeForm"></div></div>
 <div id="violationModal" class="modal"><div class="modal-content"><h3>⚠️ Нарушение</h3><textarea id="violationComment" placeholder="Опишите нарушение..." rows="3"></textarea><button id="saveViolationBtn">Сохранить</button><button id="closeViolationBtn" class="secondary">Отмена</button></div></div>
 <div id="usersModal" class="modal"><div class="modal-content"><h3>👥 Пользователи</h3><div id="usersList"></div><button id="closeUsersBtn" class="secondary">Закрыть</button></div></div>
+<div id="alertModal" class="modal"><div class="modal-content"><h3>⚠️ Предупреждение</h3><p id="alertMessage"></p><button id="closeAlertBtn" class="secondary">Закрыть</button></div></div>
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
@@ -503,6 +605,8 @@
     let isAdmin = false;
     let tg = null;
     let currentUserId = null;
+    
+    let lossLimit = null;
     
     try {
         tg = window.Telegram?.WebApp;
@@ -524,23 +628,116 @@
         currentUserId = "demo_" + Date.now();
     }
     
-    // ========== СЧЁТЧИК ПОСЕТИТЕЛЕЙ ==========
-    let visitorCount = 0;
+    // ========== ТЕМА ==========
+    function initTheme() {
+        const savedTheme = localStorage.getItem('theme');
+        if(savedTheme === 'light') {
+            document.body.classList.add('light-theme');
+            document.getElementById('themeToggle').textContent = '☀️';
+        } else {
+            document.body.classList.remove('light-theme');
+            document.getElementById('themeToggle').textContent = '🌙';
+        }
+    }
     
+    document.getElementById('themeToggle').addEventListener('click', () => {
+        if(document.body.classList.contains('light-theme')) {
+            document.body.classList.remove('light-theme');
+            localStorage.setItem('theme', 'dark');
+            document.getElementById('themeToggle').textContent = '🌙';
+        } else {
+            document.body.classList.add('light-theme');
+            localStorage.setItem('theme', 'light');
+            document.getElementById('themeToggle').textContent = '☀️';
+        }
+    });
+    
+    // ========== ДИСЦИПЛИНА ==========
+    function calculateDiscipline(trades) {
+        if(trades.length === 0) return 100;
+        const violationsCount = trades.filter(t => t.violation === true).length;
+        return Math.round(((trades.length - violationsCount) / trades.length) * 100);
+    }
+    
+    function updateDisciplineStats() {
+        const today = new Date().toISOString().slice(0,10);
+        const todayTrades = [...guestTrades, ...adminTrades].filter(t => t.date === today);
+        const monthTrades = [...guestTrades, ...adminTrades].filter(t => t.date.startsWith(`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`));
+        const allTrades = [...guestTrades, ...adminTrades];
+        
+        document.getElementById('disciplineToday').textContent = calculateDiscipline(todayTrades) + '%';
+        document.getElementById('disciplineMonth').textContent = calculateDiscipline(monthTrades) + '%';
+        document.getElementById('disciplineAll').textContent = calculateDiscipline(allTrades) + '%';
+        
+        let detailsHtml = `<div><strong>📋 Детали нарушений:</strong></div>`;
+        const violations = allTrades.filter(t => t.violation === true);
+        if(violations.length === 0) {
+            detailsHtml += `<div>✅ Нарушений не зафиксировано</div>`;
+        } else {
+            detailsHtml += `<div>⚠️ Нарушений: ${violations.length}</div>`;
+            violations.slice(-5).forEach(v => {
+                detailsHtml += `<div style="font-size:12px; margin-top:4px;">• ${v.date} ${v.time} — ${v.comment || 'без комментария'}</div>`;
+            });
+            if(violations.length > 5) {
+                detailsHtml += `<div style="font-size:12px;">...и ещё ${violations.length - 5} нарушений</div>`;
+            }
+        }
+        document.getElementById('disciplineDetails').innerHTML = detailsHtml;
+    }
+    
+    // ========== ЛИМИТ УБЫТКА ==========
+    function loadLossLimit() {
+        const saved = localStorage.getItem(`loss_limit_${currentUserId}`);
+        lossLimit = saved ? parseFloat(saved) : null;
+        if(lossLimit) {
+            document.getElementById('lossLimitDisplay').textContent = `${lossLimit.toFixed(2)} ₽`;
+            document.getElementById('lossLimitInput').value = lossLimit;
+        } else {
+            document.getElementById('lossLimitDisplay').textContent = 'Не установлен';
+        }
+    }
+    
+    function saveLossLimit() {
+        const value = parseFloat(document.getElementById('lossLimitInput').value);
+        if(isNaN(value) || value <= 0) {
+            localStorage.removeItem(`loss_limit_${currentUserId}`);
+            lossLimit = null;
+            document.getElementById('lossLimitDisplay').textContent = 'Не установлен';
+            alert("Лимит убытка отключён");
+        } else {
+            lossLimit = value;
+            localStorage.setItem(`loss_limit_${currentUserId}`, value);
+            document.getElementById('lossLimitDisplay').textContent = `${value.toFixed(2)} ₽`;
+            alert(`✅ Лимит убытка установлен: ${value.toFixed(2)} ₽`);
+        }
+    }
+    
+    function checkDailyLossLimit() {
+        if(!lossLimit) return false;
+        const today = new Date().toISOString().slice(0,10);
+        const todayTrades = [...guestTrades, ...adminTrades].filter(t => t.date === today);
+        let todayLoss = 0;
+        todayTrades.forEach(t => {
+            if(t.profit < 0) todayLoss += Math.abs(t.profit);
+        });
+        if(todayLoss >= lossLimit) {
+            document.getElementById('alertMessage').textContent = `⚠️ Внимание! Дневной убыток достиг ${todayLoss.toFixed(2)} ₽. Лимит: ${lossLimit.toFixed(2)} ₽. Рекомендуется остановиться на сегодня.`;
+            document.getElementById('alertModal').style.display = 'flex';
+            return true;
+        }
+        return false;
+    }
+    
+    // ========== ПОСЕТИТЕЛИ ==========
     async function registerVisitor() {
         try {
-            // Пытаемся получить текущий счётчик
             let response = await fetch(VISITOR_API_URL);
             let visitors = [];
             if(response.ok) {
                 visitors = await response.json();
             }
-            
-            // Проверяем, был ли уже этот пользователь
             const existingVisitor = visitors.find(v => v.userId === currentUserId);
-            
             if(!existingVisitor) {
-                // Новый посетитель
                 const newVisitor = {
                     userId: currentUserId,
                     firstVisit: new Date().toISOString(),
@@ -552,12 +749,8 @@
                     body: JSON.stringify(newVisitor)
                 });
             }
-            
-            // Обновляем отображение счётчика
             await updateVisitorDisplay();
         } catch(e) {
-            console.log("Ошибка регистрации посетителя:", e);
-            // Если MockAPI не работает, показываем локальный счётчик
             let localCount = localStorage.getItem('visitor_count_demo') || 1;
             document.getElementById('visitorCounter').innerHTML = `👥 ~${localCount} чел.`;
         }
@@ -571,16 +764,9 @@
                 const uniqueCount = visitors.length;
                 document.getElementById('visitorCounter').innerHTML = `👥 ${uniqueCount} чел.`;
             } else {
-                // Если ресурс не создан, создаём его
-                await fetch(VISITOR_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ count: 0 })
-                });
                 document.getElementById('visitorCounter').innerHTML = `👥 1 чел.`;
             }
         } catch(e) {
-            console.log("Ошибка получения счётчика:", e);
             document.getElementById('visitorCounter').innerHTML = `👥 -- чел.`;
         }
     }
@@ -704,6 +890,7 @@
         }
         renderCalendar(currentYear, currentMonth);
         updateMonthStats();
+        updateDisciplineStats();
     }
     
     async function saveAdminTrade(trade) {
@@ -717,6 +904,7 @@
                 const newTrade = await response.json();
                 adminTrades.push(newTrade);
                 alert("✅ Общая сделка добавлена!");
+                checkDailyLossLimit();
             } else {
                 alert("❌ Ошибка при сохранении");
             }
@@ -725,6 +913,7 @@
         }
         renderCalendar(currentYear, currentMonth);
         updateMonthStats();
+        updateDisciplineStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
     
@@ -735,6 +924,7 @@
         } catch(e) {}
         renderCalendar(currentYear, currentMonth);
         updateMonthStats();
+        updateDisciplineStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
     
@@ -755,8 +945,10 @@
         saveLocalData();
         renderCalendar(currentYear, currentMonth);
         updateMonthStats();
+        updateDisciplineStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
         alert("✅ Личная сделка добавлена!");
+        checkDailyLossLimit();
     }
     
     function deleteLocalTrade(id) {
@@ -764,6 +956,7 @@
         saveLocalData();
         renderCalendar(currentYear, currentMonth);
         updateMonthStats();
+        updateDisciplineStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
     
@@ -1221,6 +1414,7 @@
     
     document.getElementById('closeDevBtn').onclick = () => document.getElementById('devModal').style.display = 'none';
     document.getElementById('closeUsersBtn').onclick = () => document.getElementById('usersModal').style.display = 'none';
+    document.getElementById('closeAlertBtn').onclick = () => document.getElementById('alertModal').style.display = 'none';
     document.getElementById('saveViolationBtn').onclick = () => {
         const comment = document.getElementById('violationComment').value.trim();
         if(!comment) return alert("Введите комментарий");
@@ -1235,12 +1429,14 @@
     };
     
     document.getElementById('calculateBtn').addEventListener('click', calculateAccelerator);
+    document.getElementById('saveLossLimitBtn').addEventListener('click', saveLossLimit);
     
     window.onclick = (e) => {
         if(e.target === document.getElementById('devModal')) document.getElementById('devModal').style.display = 'none';
         if(e.target === document.getElementById('addTradeModal')) document.getElementById('addTradeModal').style.display = 'none';
         if(e.target === document.getElementById('violationModal')) document.getElementById('violationModal').style.display = 'none';
         if(e.target === document.getElementById('usersModal')) document.getElementById('usersModal').style.display = 'none';
+        if(e.target === document.getElementById('alertModal')) document.getElementById('alertModal').style.display = 'none';
     };
     
     let adminTrades = [];
@@ -1253,14 +1449,17 @@
     let selectedDayElement = null;
     
     async function init() {
+        initTheme();
         registerUser();
         populateMonthYearSelectors();
         updateAdminMenu();
         initTabs();
         loadLocalData();
+        loadLossLimit();
         await loadAdminTrades();
         renderCalendar(currentYear, currentMonth);
         await registerVisitor();
+        updateDisciplineStats();
     }
     
     init();
