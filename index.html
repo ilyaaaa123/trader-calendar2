@@ -49,6 +49,7 @@
         button.danger { background: #8B2C2C; }
         button.secondary { background: #2C5282; }
         button.warning { background: #B1661A; }
+        button.purple { background: #9b59b6; }
         
         /* Исправление для мобильных устройств — убираем масштабирование */
         input, select, textarea {
@@ -61,9 +62,9 @@
             color: white;
             font-size: 16px;
         }
-        /* Цифровая клавиатура для полей с числами */
-        input[type="number"] {
-            inputmode: numeric;
+        /* Цифровая клавиатура как на калькуляторе */
+        input[type="number"], input[type="text"].numeric {
+            inputmode: decimal;
             -moz-appearance: textfield;
         }
         input[type="number"]::-webkit-inner-spin-button,
@@ -86,11 +87,10 @@
             background: #0A1A2A;
             font-weight: bold;
         }
-        /* Цветовая индикация дней */
-        .calendar-day.profit-day { background: #1E6F3F; }      /* Зелёный — плюс */
-        .calendar-day.loss-day { background: #8B2C2C; }       /* Красный — минус */
-        .calendar-day.comment-day { background: #B1661A; }    /* Жёлтый/оранжевый — есть комментарий */
-        .calendar-day.admin-day { background: #9b59b6; }      /* Фиолетовый — сделки администратора */
+        .calendar-day.profit-day { background: #1E6F3F; }
+        .calendar-day.loss-day { background: #8B2C2C; }
+        .calendar-day.comment-day { background: #B1661A; }
+        .calendar-day.admin-day { background: #9b59b6; }
         
         .trade-item {
             background: #0E1C2C;
@@ -200,11 +200,18 @@
             font-weight: bold;
             margin-left: 10px;
         }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
         @media (max-width: 768px) {
             body { padding: 12px; }
             .card { padding: 16px; }
             .header { font-size: 24px; }
             .dots-btn { padding: 8px; }
+            .action-buttons button { flex: 1; font-size: 14px; padding: 10px; }
         }
     </style>
 </head>
@@ -351,12 +358,17 @@
         let allTrades = [...dayGuestTrades, ...dayAdminTrades];
         
         if(allTrades.length === 0 && !violation) {
+            let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
+                           <button id="violationFromPanelBtn" class="warning">⚠️ Добавить нарушение</button>`;
+            if(isAdmin) {
+                buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Добавить общую сделку</button>`;
+            }
             panel.innerHTML = `<div><h3>📅 ${dateStr}</h3><p>📭 В этот день сделок нет.</p>
-                <button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
-                <button id="violationFromPanelBtn" class="warning">⚠️ Добавить нарушение</button>
+                <div class="action-buttons">${buttons}</div>
             </div>`;
-            document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr));
+            document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, false));
             document.getElementById('violationFromPanelBtn')?.addEventListener('click', () => openViolationModal(dateStr));
+            document.getElementById('addGlobalFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, true));
             return;
         }
         
@@ -376,7 +388,6 @@
             <hr>
         `;
         
-        // Сделки администратора (видны всем)
         if(dayAdminTrades.length > 0) {
             html += `<div style="margin: 8px 0;"><strong>👑 Общие сделки (администратор):</strong></div>`;
             dayAdminTrades.forEach(t => {
@@ -390,7 +401,6 @@
             });
         }
         
-        // Личные сделки пользователя
         if(dayGuestTrades.length > 0) {
             html += `<div style="margin: 8px 0;"><strong>📋 Мои сделки:</strong></div>`;
             dayGuestTrades.forEach(t => {
@@ -404,14 +414,17 @@
             });
         }
         
-        html += `<hr>
-            <button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
-            <button id="violationFromPanelBtn" class="warning">⚠️ Добавить/изменить нарушение</button>
-        </div>`;
+        let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить сделку</button>
+                       <button id="violationFromPanelBtn" class="warning">⚠️ Добавить/изменить нарушение</button>`;
+        if(isAdmin) {
+            buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Добавить общую сделку</button>`;
+        }
+        html += `<hr><div class="action-buttons">${buttons}</div></div>`;
         panel.innerHTML = html;
         
-        document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr));
+        document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, false));
         document.getElementById('violationFromPanelBtn')?.addEventListener('click', () => openViolationModal(dateStr));
+        document.getElementById('addGlobalFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, true));
         document.querySelectorAll('[data-admin-id]').forEach(btn => {
             btn.onclick = () => deleteAdminTrade(parseInt(btn.dataset.adminId));
         });
@@ -447,14 +460,14 @@
                 <button id="lossTypeBtn" class="danger">❌ Убыток</button>
             </div>
             <div id="profitFields" style="display:none;">
-                <input type="number" inputmode="numeric" id="profitAmount" placeholder="Сумма (₽)" value="1000">
-                <input type="number" inputmode="numeric" id="profitPercent" placeholder="Процент (20-92)" value="89">
+                <input type="number" inputmode="decimal" id="profitAmount" placeholder="Сумма (₽)" value="1000">
+                <input type="number" inputmode="decimal" id="profitPercent" placeholder="Процент (20-92)" value="89">
                 <div id="profitPreview" style="background:#0A2A1A; padding:10px; border-radius:20px; margin:10px 0;">💵 Итог: 0 ₽</div>
                 <textarea id="profitComment" placeholder="Комментарий"></textarea>
                 <button id="submitProfitBtn">✅ Добавить</button>
             </div>
             <div id="lossFields" style="display:none;">
-                <input type="number" inputmode="numeric" id="lossAmount" placeholder="Сумма убытка (₽)" value="1000">
+                <input type="number" inputmode="decimal" id="lossAmount" placeholder="Сумма убытка (₽)" value="1000">
                 <textarea id="lossComment" placeholder="Комментарий"></textarea>
                 <button id="submitLossBtn" class="danger">❌ Добавить убыток</button>
             </div>
@@ -547,21 +560,17 @@
         
         if(allTrades.length === 0 && !violation) return '';
         
-        // Проверяем, есть ли сделки администратора
         const hasAdminTrades = dayAdminTrades.length > 0;
-        
-        // Есть комментарий к сделкам
         const hasComments = allTrades.some(t => t.comment && t.comment.trim() !== '') || violation;
         if(hasComments) return 'comment-day';
         
-        // Проверяем прибыльность дня
         let profitTotal = 0;
         allTrades.forEach(t => profitTotal += t.profit);
         
-        if(hasAdminTrades && profitTotal > 0) return 'admin-day';      // Фиолетовый — сделки админа в плюс
-        if(hasAdminTrades && profitTotal < 0) return 'loss-day';       // Красный — сделки админа в минус
-        if(profitTotal > 0) return 'profit-day';                       // Зелёный — плюс
-        if(profitTotal < 0) return 'loss-day';                         // Красный — минус
+        if(hasAdminTrades && profitTotal > 0) return 'admin-day';
+        if(hasAdminTrades && profitTotal < 0) return 'loss-day';
+        if(profitTotal > 0) return 'profit-day';
+        if(profitTotal < 0) return 'loss-day';
         
         return '';
     }
@@ -639,18 +648,13 @@
         };
     }
     
-    // ========== МОБИЛЬНОЕ МЕНЮ ==========
     const dotsBtn = document.getElementById('dotsBtn');
     const dropdownMenu = document.getElementById('dropdownMenu');
     
     if(dotsBtn) {
         dotsBtn.addEventListener('click', function(e) {
             e.stopPropagation();
-            if(dropdownMenu.style.display === 'block') {
-                dropdownMenu.style.display = 'none';
-            } else {
-                dropdownMenu.style.display = 'block';
-            }
+            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
         });
     }
     
@@ -660,7 +664,6 @@
         }
     });
     
-    // ========== СКРЫТЫЙ ВХОД (ДОЛГОЕ НАЖАТИЕ) ==========
     const headerTitle = document.querySelector('.header > div:first-child');
     if(headerTitle) {
         let pressTimer;
@@ -688,15 +691,9 @@
         if(isAdmin) {
             menu.innerHTML = `
                 <button id="usersListBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">👥 Список пользователей</button>
-                <button id="globalTradeBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">👑 Добавить общую сделку</button>
                 <button id="logoutDevBtn" class="danger" style="width:100%; text-align:left; padding:12px 16px; background:#8B2C2C; border:none; color:white; font-size:16px;">🚪 Выйти из режима администратора</button>
             `;
             document.getElementById('usersListBtn')?.addEventListener('click', () => showUsersList());
-            document.getElementById('globalTradeBtn')?.addEventListener('click', () => {
-                const today = new Date().toISOString().slice(0,10);
-                openAddTradeModal(today, true);
-                dropdownMenu.style.display = 'none';
-            });
             document.getElementById('logoutDevBtn')?.addEventListener('click', () => {
                 isAdmin = false;
                 document.getElementById('adminBadge').style.display = 'none';
