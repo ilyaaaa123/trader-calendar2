@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Календарь трейдера — lifeSilya</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -155,8 +155,10 @@
             font-weight: bold;
             color: #8BB4D0;
             cursor: pointer;
-            padding: 0 8px;
+            padding: 8px;
             line-height: 1;
+            min-width: 44px;
+            min-height: 44px;
         }
         .telegram-btn {
             display: inline-flex;
@@ -178,20 +180,27 @@
             font-weight: bold;
             margin-left: 10px;
         }
+        /* Для мобильных устройств */
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .card { padding: 16px; }
+            .header { font-size: 24px; }
+            .dots-btn { padding: 8px; }
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <div class="card">
         <div class="header">
-            <div>
+            <div style="display: flex; align-items: center; gap: 8px;">
                 📅 Календарь трейдера
-                <span id="adminBadge" style="display:none;" class="admin-badge">👑 Администратор</span>
+                <span id="adminBadge" style="display:none;" class="admin-badge">👑 Админ</span>
             </div>
             <div class="dots-menu">
-                <button class="dots-btn" id="dotsBtn">⋮</button>
-                <div id="dropdownMenu" style="display:none; position:absolute; right:0; top:35px; background:#11243E; border-radius:20px; overflow:hidden;">
-                    <button id="devMenuBtn" style="width:100%; text-align:left;">🔐 Для разработчиков</button>
+                <button class="dots-btn" id="dotsBtn" aria-label="Меню">⋮</button>
+                <div id="dropdownMenu" style="display:none; position:absolute; right:0; top:45px; background:#11243E; border-radius:20px; overflow:hidden; min-width:200px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
+                    <button id="devMenuBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">🔐 Для разработчиков</button>
                 </div>
             </div>
         </div>
@@ -594,36 +603,97 @@
         };
     }
     
+    // ========== МОБИЛЬНОЕ МЕНЮ (ТРИ ТОЧКИ) ==========
     const dotsBtn = document.getElementById('dotsBtn');
     const dropdownMenu = document.getElementById('dropdownMenu');
-    dotsBtn.onclick = (e) => { 
-        e.stopPropagation(); 
-        dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-    };
-    window.onclick = () => { dropdownMenu.style.display = 'none'; };
+    
+    if(dotsBtn) {
+        dotsBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if(dropdownMenu.style.display === 'block') {
+                dropdownMenu.style.display = 'none';
+            } else {
+                dropdownMenu.style.display = 'block';
+            }
+        });
+    }
+    
+    // Закрываем меню при клике вне его
+    document.addEventListener('click', function(e) {
+        if(dropdownMenu && !dotsBtn?.contains(e.target)) {
+            dropdownMenu.style.display = 'none';
+        }
+    });
+    
+    // ========== СКРЫТЫЙ ВХОД (ДОЛГОЕ НАЖАТИЕ НА ЗАГОЛОВОК) ==========
+    const headerTitle = document.querySelector('.header > div:first-child');
+    if(headerTitle) {
+        let pressTimer;
+        headerTitle.addEventListener('touchstart', function(e) {
+            pressTimer = setTimeout(function() {
+                if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
+                    isAdmin = true;
+                    document.getElementById('adminBadge').style.display = 'inline-block';
+                    updateAdminMenu();
+                    renderCalendar(currentYear, currentMonth);
+                    alert("✅ Режим администратора активирован");
+                } else {
+                    alert("⛔ Доступ только для администратора");
+                }
+            }, 1000);
+        });
+        headerTitle.addEventListener('touchend', function() {
+            clearTimeout(pressTimer);
+        });
+        headerTitle.addEventListener('touchmove', function() {
+            clearTimeout(pressTimer);
+        });
+        // Для мыши (компьютер)
+        headerTitle.addEventListener('mousedown', function(e) {
+            pressTimer = setTimeout(function() {
+                if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
+                    isAdmin = true;
+                    document.getElementById('adminBadge').style.display = 'inline-block';
+                    updateAdminMenu();
+                    renderCalendar(currentYear, currentMonth);
+                    alert("✅ Режим администратора активирован");
+                } else {
+                    alert("⛔ Доступ только для администратора");
+                }
+            }, 1000);
+        });
+        headerTitle.addEventListener('mouseup', function() {
+            clearTimeout(pressTimer);
+        });
+        headerTitle.addEventListener('mouseleave', function() {
+            clearTimeout(pressTimer);
+        });
+    }
     
     function updateAdminMenu() {
         const menu = document.getElementById('dropdownMenu');
         if(isAdmin) {
             menu.innerHTML = `
-                <button id="usersListBtn" style="width:100%; text-align:left; background:none; color:white;">👥 Список пользователей</button>
-                <button id="globalTradeBtn" style="width:100%; text-align:left; background:none; color:white;">👑 Добавить общую сделку</button>
-                <button id="logoutDevBtn" class="danger" style="width:100%; text-align:left;">🚪 Выйти из режима администратора</button>
+                <button id="usersListBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">👥 Список пользователей</button>
+                <button id="globalTradeBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">👑 Добавить общую сделку</button>
+                <button id="logoutDevBtn" class="danger" style="width:100%; text-align:left; padding:12px 16px; background:#8B2C2C; border:none; color:white; font-size:16px;">🚪 Выйти из режима администратора</button>
             `;
             document.getElementById('usersListBtn')?.addEventListener('click', () => showUsersList());
             document.getElementById('globalTradeBtn')?.addEventListener('click', () => {
                 const today = new Date().toISOString().slice(0,10);
                 openAddTradeModal(today, true);
+                dropdownMenu.style.display = 'none';
             });
             document.getElementById('logoutDevBtn')?.addEventListener('click', () => {
                 isAdmin = false;
                 document.getElementById('adminBadge').style.display = 'none';
                 updateAdminMenu();
                 renderCalendar(currentYear, currentMonth);
+                dropdownMenu.style.display = 'none';
                 alert("👋 Вы вышли из режима администратора");
             });
         } else {
-            menu.innerHTML = `<button id="devMenuBtn" style="width:100%; text-align:left; background:none; color:white;">🔐 Для разработчиков</button>`;
+            menu.innerHTML = `<button id="devMenuBtn" style="width:100%; text-align:left; padding:12px 16px; background:none; border:none; color:white; font-size:16px;">🔐 Для разработчиков</button>`;
             document.getElementById('devMenuBtn')?.addEventListener('click', () => {
                 dropdownMenu.style.display = 'none';
                 if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
