@@ -211,12 +211,40 @@
         }
         .action-buttons button { flex: 1; font-size: 13px; padding: 8px; }
         
+        /* Стили для метрик прибыли */
+        .stats-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        .stat-card {
+            flex: 1;
+            background: #0A1A2A;
+            border-radius: 20px;
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #2C4F6E;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: #8BB4D0;
+            margin-bottom: 6px;
+        }
+        .stat-card .value {
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .stat-card .value.profit-positive { color: #4ADE80; }
+        .stat-card .value.profit-negative { color: #F87171; }
+        
         @media (max-width: 768px) {
             body { padding: 8px; }
             .card { padding: 12px; }
             .header { font-size: 20px; }
             .calendar-day { padding: 6px 2px; font-size: 12px; }
             .action-buttons button { font-size: 12px; }
+            .stat-card .value { font-size: 16px; }
         }
     </style>
 </head>
@@ -235,7 +263,7 @@
                 </div>
             </div>
         </div>
-        <div class="sub">lifeSilya • 14 валютных пар</div>
+        <div class="sub">lifeSilya • 13 валютных пар</div>
         
         <div class="month-selector">
             <select id="monthSelect"></select>
@@ -243,6 +271,18 @@
             <button id="refreshCalendarBtn">Показать</button>
         </div>
         <div id="calendarContainer"></div>
+        
+        <!-- Блок с общей прибылью за месяц -->
+        <div class="stats-row" id="monthStats">
+            <div class="stat-card">
+                <div class="label">👑 Общая прибыль (публичные сделки)</div>
+                <div class="value" id="publicMonthProfit">0 ₽</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">📋 Моя прибыль (личные сделки)</div>
+                <div class="value" id="privateMonthProfit">0 ₽</div>
+            </div>
+        </div>
     </div>
     <div id="tradesPanel" class="card"></div>
     
@@ -303,6 +343,45 @@
     let currentYear = 2026;
     let currentMonth = 3;
     
+    // ========== РАСЧЁТ ПРИБЫЛИ ЗА МЕСЯЦ ==========
+    function calculateMonthProfit(year, month) {
+        const monthStr = `${year}-${String(month+1).padStart(2,'0')}`;
+        
+        // Публичные сделки (администратор)
+        let publicProfit = 0;
+        adminTrades.forEach(t => {
+            if(t.date.startsWith(monthStr)) {
+                publicProfit += t.profit || 0;
+            }
+        });
+        
+        // Личные сделки (текущий пользователь)
+        let privateProfit = 0;
+        guestTrades.forEach(t => {
+            if(t.date.startsWith(monthStr)) {
+                privateProfit += t.profit || 0;
+            }
+        });
+        
+        return { publicProfit, privateProfit };
+    }
+    
+    function updateMonthStats() {
+        const { publicProfit, privateProfit } = calculateMonthProfit(currentYear, currentMonth);
+        
+        const publicEl = document.getElementById('publicMonthProfit');
+        const privateEl = document.getElementById('privateMonthProfit');
+        
+        if(publicEl) {
+            publicEl.textContent = `${publicProfit > 0 ? '+' : ''}${publicProfit.toFixed(2)} ₽`;
+            publicEl.className = `value ${publicProfit >= 0 ? 'profit-positive' : 'profit-negative'}`;
+        }
+        if(privateEl) {
+            privateEl.textContent = `${privateProfit > 0 ? '+' : ''}${privateProfit.toFixed(2)} ₽`;
+            privateEl.className = `value ${privateProfit >= 0 ? 'profit-positive' : 'profit-negative'}`;
+        }
+    }
+    
     // ========== РАБОТА С MOCKAPI ==========
     async function loadAdminTrades() {
         try {
@@ -316,6 +395,7 @@
             adminTrades = [];
         }
         renderCalendar(currentYear, currentMonth);
+        updateMonthStats();
     }
     
     async function saveAdminTrade(trade) {
@@ -336,6 +416,7 @@
             alert("❌ Ошибка соединения");
         }
         renderCalendar(currentYear, currentMonth);
+        updateMonthStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
     
@@ -345,6 +426,7 @@
             adminTrades = adminTrades.filter(t => t.id != id);
         } catch(e) {}
         renderCalendar(currentYear, currentMonth);
+        updateMonthStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
     
@@ -366,6 +448,7 @@
         guestTrades.push(trade);
         saveLocalData();
         renderCalendar(currentYear, currentMonth);
+        updateMonthStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
         alert("✅ Личная сделка добавлена!");
     }
@@ -374,6 +457,7 @@
         guestTrades = guestTrades.filter(t => t.id !== id);
         saveLocalData();
         renderCalendar(currentYear, currentMonth);
+        updateMonthStats();
         if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     }
     
@@ -502,7 +586,6 @@
         const formDiv = document.getElementById('addTradeForm');
         const title = isGlobal ? "👑 Общая сделка (увидят все)" : "➕ Моя сделка (только вам)";
         
-        // Создаём опции валютных пар
         let pairOptions = '';
         CURRENCY_PAIRS.forEach(pair => {
             pairOptions += `<option value="${pair}">${pair}</option>`;
@@ -675,6 +758,7 @@
         });
         const defaultDate = `${year}-${String(month+1).padStart(2,'0')}-01`;
         showTradesForDate(defaultDate);
+        updateMonthStats();
     }
     
     function registerUser() {
