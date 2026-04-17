@@ -27,7 +27,18 @@
             color: #4a6a8a;
             border-left-color: #2E7EB8;
         }
-        body.light-theme .calendar-day,
+        body.light-theme .calendar-day {
+            background: #e8edf5;
+            color: #0A192F;
+        }
+        body.light-theme .calendar-day.profit-day { background: #1E6F3F; color: white; }
+        body.light-theme .calendar-day.loss-day { background: #8B2C2C; color: white; }
+        body.light-theme .calendar-day.comment-day { background: #B1661A; color: white; }
+        body.light-theme .calendar-day.admin-day { background: #9b59b6; color: white; }
+        body.light-theme .calendar-day.selected-day {
+            background: #3B82F6 !important;
+            color: white;
+        }
         body.light-theme .trade-item,
         body.light-theme .collapsible-header,
         body.light-theme .stat-card,
@@ -50,6 +61,10 @@
         }
         body.light-theme .visitor-counter {
             background: #e8edf5;
+            color: #0A192F;
+        }
+        body.light-theme .winrate-badge {
+            background: #c0c8d8;
             color: #0A192F;
         }
         
@@ -100,6 +115,13 @@
         .tab-btn.active {
             background: #2C5282;
             color: white;
+        }
+        body.light-theme .tab-btn.active {
+            background: #2C5282;
+            color: white;
+        }
+        body.light-theme .tab-btn {
+            color: #4a6a8a;
         }
         .tab-content {
             display: none;
@@ -470,7 +492,7 @@
                 </div>
             </div>
         </div>
-        <div class="sub">lifeSilya • 15 валютных пар</div>
+        <div class="sub">lifeSilya • 22 валютные пары</div>
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="calendar">📅 Календарь</button>
@@ -593,11 +615,12 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-    // ========== ВАЛЮТНЫЕ ПАРЫ (15 пар) ==========
+    // ========== ВАЛЮТНЫЕ ПАРЫ (22 пары) ==========
     const CURRENCY_PAIRS = [
-        "EUR/USD", "USD/JPY", "GBP/USD", "USD/CHF", "USD/CAD",
-        "AUD/USD", "NZD/USD", "EUR/GBP", "GBP/JPY", "EUR/JPY",
-        "AUD/NZD", "EUR/CHF", "CHF/JPY", "AUD/CHF", "GBP/AUD"
+        "EUR/USD", "GBP/USD", "USD/JPY", "USD/CHF", "AUD/USD",
+        "USD/CAD", "EUR/GBP", "GBP/JPY", "AUD/JPY", "EUR/CHF",
+        "USD/TRY", "EUR/TRY", "GBP/ZAR", "USD/SGD", "USD/MXN",
+        "NZD/USD", "EUR/JPY", "AUD/NZD", "CHF/JPY", "AUD/CHF", "GBP/AUD"
     ];
     
     const API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/admin_trades';
@@ -651,6 +674,8 @@
             localStorage.setItem('theme', 'light');
             document.getElementById('themeToggle').textContent = '☀️';
         }
+        renderCalendar(currentYear, currentMonth);
+        if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
     });
     
     // ========== ДИСЦИПЛИНА ==========
@@ -662,15 +687,15 @@
     
     function updateDisciplineStats() {
         const today = new Date().toISOString().slice(0,10);
-        const todayTrades = [...guestTrades, ...adminTrades].filter(t => t.date === today);
-        const monthTrades = [...guestTrades, ...adminTrades].filter(t => t.date.startsWith(`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`));
-        const allTrades = [...guestTrades, ...adminTrades];
+        const todayTrades = guestTrades.filter(t => t.date === today);
+        const monthTrades = guestTrades.filter(t => t.date.startsWith(`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`));
+        const allTrades = guestTrades;
         
         document.getElementById('disciplineToday').textContent = calculateDiscipline(todayTrades) + '%';
         document.getElementById('disciplineMonth').textContent = calculateDiscipline(monthTrades) + '%';
         document.getElementById('disciplineAll').textContent = calculateDiscipline(allTrades) + '%';
         
-        let detailsHtml = `<div><strong>📋 Детали нарушений:</strong></div>`;
+        let detailsHtml = `<div><strong>📋 Детали нарушений (личные сделки):</strong></div>`;
         const violations = allTrades.filter(t => t.violation === true);
         if(violations.length === 0) {
             detailsHtml += `<div>✅ Нарушений не зафиксировано</div>`;
@@ -716,7 +741,7 @@
     function checkDailyLossLimit() {
         if(!lossLimit) return false;
         const today = new Date().toISOString().slice(0,10);
-        const todayTrades = [...guestTrades, ...adminTrades].filter(t => t.date === today);
+        const todayTrades = guestTrades.filter(t => t.date === today);
         let todayLoss = 0;
         todayTrades.forEach(t => {
             if(t.profit < 0) todayLoss += Math.abs(t.profit);
@@ -905,7 +930,6 @@
                 const newTrade = await response.json();
                 adminTrades.push(newTrade);
                 alert("✅ Общая сделка добавлена!");
-                checkDailyLossLimit();
             } else {
                 alert("❌ Ошибка при сохранении");
             }
