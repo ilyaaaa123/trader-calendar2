@@ -7,7 +7,6 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
-        /* Тёмная тема (по умолчанию) */
         body {
             background-color: #0A192F;
             font-family: 'Segoe UI', Roboto, sans-serif;
@@ -67,11 +66,13 @@
             background: #c0c8d8;
             color: #0A192F;
         }
-        body.light-theme .pair-group {
-            background: #e0e4ec;
+        body.light-theme .pair-list {
+            background: #e8edf5;
+            border-color: #c0c8d8;
         }
-        body.light-theme .pair-group-title {
-            background: #d0d4dc;
+        body.light-theme .pair-item {
+            background: #ffffff;
+            border-color: #d0d8e8;
         }
         
         .container { max-width: 900px; margin: 0 auto; }
@@ -162,8 +163,8 @@
             font-size: 16px;
         }
         input::placeholder {
-            color: #5a7a9a;
-            font-size: 13px;
+            color: #8BB4D0;
+            font-size: 14px;
         }
         input[type="number"] {
             inputmode: decimal;
@@ -175,7 +176,7 @@
             margin: 0;
         }
         
-        /* Стили для поиска и группировки валют */
+        /* Стили для поиска валют (один столбик, по алфавиту) */
         .search-container {
             margin-bottom: 16px;
         }
@@ -183,54 +184,62 @@
             margin-bottom: 0;
             padding: 12px 16px;
             border-radius: 40px;
-        }
-        .pair-group {
-            margin-bottom: 16px;
+            color: white;
             background: #0A1A2A;
-            border-radius: 20px;
-            overflow: hidden;
+            border: 1px solid #2E4A6A;
         }
-        .pair-group-title {
-            background: #1F3A4B;
-            padding: 10px 16px;
-            font-weight: bold;
-            font-size: 14px;
-            cursor: pointer;
+        body.light-theme .search-container input {
+            color: #0A192F;
+            background: #ffffff;
+        }
+        .pair-list {
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #2C4F6E;
+            border-radius: 20px;
+            background: #0A1A2A;
+        }
+        .pair-item {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-        }
-        .pair-group-title .arrow {
-            transition: transform 0.2s;
-        }
-        .pair-group-title.collapsed .arrow {
-            transform: rotate(-90deg);
-        }
-        .pair-group-options {
-            padding: 8px;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 6px;
-        }
-        .pair-group-options.collapsed {
-            display: none;
-        }
-        .pair-option {
-            background: #0E1C2C;
-            padding: 8px;
-            border-radius: 20px;
-            text-align: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-bottom: 1px solid #2C4F6E;
             cursor: pointer;
-            font-size: 13px;
             transition: all 0.2s;
         }
-        .pair-option:hover {
-            background: #2C5282;
+        .pair-item:last-child {
+            border-bottom: none;
         }
-        .pair-option.selected {
+        .pair-item:hover {
+            background: #1F3A4B;
+        }
+        .pair-item.selected {
             background: #1E6F3F;
         }
-        body.light-theme .pair-option {
+        .pair-item .flag {
+            font-size: 20px;
+        }
+        .pair-item .pair-code {
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .pair-item .pair-name {
+            font-size: 12px;
+            color: #8BB4D0;
+            margin-left: auto;
+        }
+        body.light-theme .pair-item .pair-name {
+            color: #4a6a8a;
+        }
+        body.light-theme .pair-list {
+            background: #ffffff;
+            border-color: #d0d8e8;
+        }
+        body.light-theme .pair-item {
+            border-bottom-color: #e0e4ec;
+        }
+        body.light-theme .pair-item:hover {
             background: #e0e4ec;
         }
         
@@ -339,7 +348,7 @@
             border-radius: 28px;
             padding: 20px;
             width: 95%;
-            max-width: 480px;
+            max-width: 500px;
             max-height: 85%;
             overflow: auto;
         }
@@ -500,8 +509,10 @@
             .calc-col .label { font-size: 10px; }
             .calc-col input { font-size: 12px; padding: 8px; }
             .visitor-counter { font-size: 10px; padding: 2px 8px; }
-            .pair-group-options { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
-            .pair-option { font-size: 11px; }
+            .pair-item { padding: 10px 12px; }
+            .pair-item .flag { font-size: 16px; }
+            .pair-item .pair-code { font-size: 12px; }
+            .pair-item .pair-name { font-size: 10px; }
         }
     </style>
 </head>
@@ -647,22 +658,41 @@
 
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-    // ========== ВАЛЮТНЫЕ ПАРЫ (25 пар, сгруппированные по базовой валюте) ==========
-    const CURRENCY_GROUPS = {
-        "🇺🇸 USD": ["USD/JPY", "USD/CHF", "USD/CAD", "USD/TRY", "USD/SGD", "USD/MXN", "USD/ZAR"],
-        "🇪🇺 EUR": ["EUR/USD", "EUR/GBP", "EUR/JPY", "EUR/CHF", "EUR/TRY", "EUR/CAD"],
-        "🇬🇧 GBP": ["GBP/USD", "GBP/JPY", "GBP/AUD", "GBP/CAD", "GBP/CHF"],
-        "🇦🇺 AUD": ["AUD/USD", "AUD/JPY", "AUD/NZD", "AUD/CAD", "AUD/CHF"],
-        "🇳🇿 NZD": ["NZD/USD", "NZD/JPY", "NZD/CAD"],
-        "🇨🇭 CHF": ["CHF/JPY"],
-        "🇨🇦 CAD": ["CAD/CHF", "CAD/JPY"]
-    };
+    // ========== ВАЛЮТНЫЕ ПАРЫ (сортировка по алфавиту) ==========
+    const CURRENCY_PAIRS_LIST = [
+        { pair: "AUD/CAD", flag: "🇦🇺", name: "Австралийский доллар / Канадский доллар" },
+        { pair: "AUD/CHF", flag: "🇦🇺", name: "Австралийский доллар / Швейцарский франк" },
+        { pair: "AUD/JPY", flag: "🇦🇺", name: "Австралийский доллар / Японская иена" },
+        { pair: "AUD/NZD", flag: "🇦🇺", name: "Австралийский доллар / Новозеландский доллар" },
+        { pair: "AUD/USD", flag: "🇦🇺", name: "Австралийский доллар / Доллар США" },
+        { pair: "CAD/CHF", flag: "🇨🇦", name: "Канадский доллар / Швейцарский франк" },
+        { pair: "CAD/JPY", flag: "🇨🇦", name: "Канадский доллар / Японская иена" },
+        { pair: "CHF/JPY", flag: "🇨🇭", name: "Швейцарский франк / Японская иена" },
+        { pair: "EUR/CAD", flag: "🇪🇺", name: "Евро / Канадский доллар" },
+        { pair: "EUR/CHF", flag: "🇪🇺", name: "Евро / Швейцарский франк" },
+        { pair: "EUR/GBP", flag: "🇪🇺", name: "Евро / Британский фунт" },
+        { pair: "EUR/JPY", flag: "🇪🇺", name: "Евро / Японская иена" },
+        { pair: "EUR/TRY", flag: "🇪🇺", name: "Евро / Турецкая лира" },
+        { pair: "EUR/USD", flag: "🇪🇺", name: "Евро / Доллар США" },
+        { pair: "GBP/AUD", flag: "🇬🇧", name: "Британский фунт / Австралийский доллар" },
+        { pair: "GBP/CAD", flag: "🇬🇧", name: "Британский фунт / Канадский доллар" },
+        { pair: "GBP/CHF", flag: "🇬🇧", name: "Британский фунт / Швейцарский франк" },
+        { pair: "GBP/JPY", flag: "🇬🇧", name: "Британский фунт / Японская иена" },
+        { pair: "GBP/USD", flag: "🇬🇧", name: "Британский фунт / Доллар США" },
+        { pair: "NZD/CAD", flag: "🇳🇿", name: "Новозеландский доллар / Канадский доллар" },
+        { pair: "NZD/JPY", flag: "🇳🇿", name: "Новозеландский доллар / Японская иена" },
+        { pair: "NZD/USD", flag: "🇳🇿", name: "Новозеландский доллар / Доллар США" },
+        { pair: "USD/CAD", flag: "🇺🇸", name: "Доллар США / Канадский доллар" },
+        { pair: "USD/CHF", flag: "🇺🇸", name: "Доллар США / Швейцарский франк" },
+        { pair: "USD/JPY", flag: "🇺🇸", name: "Доллар США / Японская иена" },
+        { pair: "USD/MXN", flag: "🇺🇸", name: "Доллар США / Мексиканское песо" },
+        { pair: "USD/SGD", flag: "🇺🇸", name: "Доллар США / Сингапурский доллар" },
+        { pair: "USD/TRY", flag: "🇺🇸", name: "Доллар США / Турецкая лира" },
+        { pair: "USD/ZAR", flag: "🇺🇸", name: "Доллар США / Южноафриканский рэнд" }
+    ];
     
-    // Плоский список для поиска
-    const ALL_PAIRS = [];
-    for(const group in CURRENCY_GROUPS) {
-        ALL_PAIRS.push(...CURRENCY_GROUPS[group]);
-    }
+    // Сортируем по алфавиту
+    CURRENCY_PAIRS_LIST.sort((a, b) => a.pair.localeCompare(b.pair));
     
     const API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/admin_trades';
     const VISITOR_API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/visitors';
@@ -839,69 +869,51 @@
         }
     }
     
-    // ========== ПОИСК И ГРУППИРОВКА ВАЛЮТ ==========
-    function buildCurrencySelector() {
-        const container = document.getElementById('currencySelectorContainer');
+    // ========== ВЫБОР ВАЛЮТЫ (ОДИН СТОЛБИК, ПОИСК, АЛФАВИТ) ==========
+    function buildCurrencySelector(containerId) {
+        const container = document.getElementById(containerId);
         if(!container) return;
         
         const searchValue = document.getElementById('currencySearch')?.value.toLowerCase() || '';
         
+        const filteredPairs = CURRENCY_PAIRS_LIST.filter(item => 
+            searchValue === '' || 
+            item.pair.toLowerCase().includes(searchValue) || 
+            item.name.toLowerCase().includes(searchValue)
+        );
+        
         let html = '<div class="search-container"><input type="text" id="currencySearch" placeholder="🔍 Поиск валютной пары..."></div>';
         
-        let hasResults = false;
-        
-        for(const [base, pairs] of Object.entries(CURRENCY_GROUPS)) {
-            const filteredPairs = pairs.filter(pair => 
-                searchValue === '' || pair.toLowerCase().includes(searchValue)
-            );
-            
-            if(filteredPairs.length === 0) continue;
-            hasResults = true;
-            
-            html += `<div class="pair-group" data-group="${base}">
-                <div class="pair-group-title" data-group="${base}">
-                    <span>📌 ${base}</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div class="pair-group-options" data-group-content="${base}">
-                    ${filteredPairs.map(pair => `
-                        <div class="pair-option ${selectedPair === pair ? 'selected' : ''}" data-pair="${pair}">${pair}</div>
-                    `).join('')}
-                </div>
-            </div>`;
-        }
-        
-        if(!hasResults) {
+        if(filteredPairs.length === 0) {
             html += '<div style="text-align:center; padding:20px;">❌ Ничего не найдено</div>';
+        } else {
+            html += '<div class="pair-list">';
+            filteredPairs.forEach(item => {
+                const isSelected = (selectedPair === item.pair);
+                html += `
+                    <div class="pair-item ${isSelected ? 'selected' : ''}" data-pair="${item.pair}">
+                        <span class="flag">${item.flag}</span>
+                        <span class="pair-code">${item.pair}</span>
+                        <span class="pair-name">${item.name}</span>
+                    </div>
+                `;
+            });
+            html += '</div>';
         }
         
         container.innerHTML = html;
         
-        // Добавляем обработчики для групп (сворачивание/разворачивание)
-        document.querySelectorAll('.pair-group-title').forEach(title => {
-            title.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const group = title.getAttribute('data-group');
-                const content = document.querySelector(`.pair-group-options[data-group-content="${group}"]`);
-                if(content) {
-                    title.classList.toggle('collapsed');
-                    content.classList.toggle('collapsed');
-                }
-            });
-        });
-        
-        // Добавляем обработчики для выбора валютной пары
-        document.querySelectorAll('.pair-option').forEach(opt => {
-            opt.addEventListener('click', () => {
-                const pair = opt.getAttribute('data-pair');
+        // Добавляем обработчики для выбора пары
+        document.querySelectorAll('.pair-item').forEach(item => {
+            item.addEventListener('click', () => {
+                const pair = item.getAttribute('data-pair');
                 if(pair) {
                     selectedPair = pair;
-                    // Обновляем выбранное значение в форме добавления сделки
-                    const instrumentSelect = document.getElementById('tradeInstrument');
-                    if(instrumentSelect) {
-                        instrumentSelect.value = pair;
-                    }
-                    buildCurrencySelector(); // перестраиваем для обновления выделения
+                    buildCurrencySelector(containerId);
+                    // Переход на второй шаг
+                    document.getElementById('step1').classList.remove('active');
+                    document.getElementById('step2').classList.add('active');
+                    updateSelectedDisplay();
                 }
             });
         });
@@ -909,9 +921,18 @@
         // Добавляем обработчик поиска
         const searchInput = document.getElementById('currencySearch');
         if(searchInput) {
-            searchInput.addEventListener('input', () => {
-                buildCurrencySelector();
-            });
+            searchInput.removeEventListener('input', () => buildCurrencySelector(containerId));
+            searchInput.addEventListener('input', () => buildCurrencySelector(containerId));
+        }
+    }
+    
+    function updateSelectedDisplay() {
+        const display = document.getElementById('selectedPairDisplay');
+        if(display && selectedPair) {
+            const found = CURRENCY_PAIRS_LIST.find(p => p.pair === selectedPair);
+            if(found) {
+                display.innerHTML = `${found.flag} Выбрана пара: <strong>${found.pair}</strong> — ${found.name}`;
+            }
         }
     }
     
@@ -1257,41 +1278,51 @@
     
     function openAddTradeModal(dateStr, isGlobal = false) {
         selectedDateForAdd = dateStr;
+        selectedPair = null;
+        
         const formDiv = document.getElementById('addTradeForm');
         const title = isGlobal ? "👑 Общая сделка (увидят все)" : "➕ Моя сделка (только вам)";
         
-        // Создаём HTML для валютного селектора с поиском и группировкой
-        let currencyHtml = '<div id="currencySelectorContainer"></div>';
-        
         formDiv.innerHTML = `
             <h3>${title} на ${dateStr}</h3>
-            <input type="time" id="tradeTime" value="18:00">
-            ${currencyHtml}
-            <div class="direction-buttons">
-                <button id="longBtn" class="dir-btn">📈 LONG</button>
-                <button id="shortBtn" class="dir-btn">📉 SHORT</button>
+            <div id="step1" class="step active">
+                <input type="time" id="tradeTime" value="18:00">
+                <div id="currencySelectorContainer"></div>
+                <div class="step-buttons">
+                    <button id="cancelStep1Btn" class="secondary">Отмена</button>
+                </div>
             </div>
-            <div class="add-buttons">
-                <button id="profitTypeBtn" style="background:#1E6F3F;">✅ Прибыль</button>
-                <button id="lossTypeBtn" class="danger">❌ Убыток</button>
+            <div id="step2" class="step">
+                <div id="selectedPairDisplay" style="background:#0A2A1A; padding:10px; border-radius:20px; margin-bottom:16px; text-align:center; font-weight:bold;"></div>
+                <div class="direction-buttons">
+                    <button id="longBtn" class="dir-btn">📈 LONG</button>
+                    <button id="shortBtn" class="dir-btn">📉 SHORT</button>
+                </div>
+                <div class="add-buttons">
+                    <button id="profitTypeBtn" style="background:#1E6F3F;">✅ Прибыль</button>
+                    <button id="lossTypeBtn" class="danger">❌ Убыток</button>
+                </div>
+                <div id="profitFields" style="display:none;">
+                    <input type="number" inputmode="decimal" id="profitAmount" placeholder="Сумма (₽)" value="1000">
+                    <input type="number" inputmode="decimal" id="profitPercent" placeholder="Процент (20-92)" value="92">
+                    <div id="profitPreview" style="background:#0A2A1A; padding:10px; border-radius:20px; margin:10px 0;">💵 Итог: 0 ₽</div>
+                    <textarea id="profitComment" placeholder="Комментарий"></textarea>
+                    <button id="submitProfitBtn">✅ Добавить</button>
+                </div>
+                <div id="lossFields" style="display:none;">
+                    <input type="number" inputmode="decimal" id="lossAmount" placeholder="Сумма убытка (₽)" value="1000">
+                    <textarea id="lossComment" placeholder="Комментарий"></textarea>
+                    <button id="submitLossBtn" class="danger">❌ Добавить убыток</button>
+                </div>
+                <div class="step-buttons">
+                    <button id="backStep2Btn" class="secondary">◀ Назад</button>
+                    <button id="cancelStep2Btn" class="secondary">Отмена</button>
+                </div>
             </div>
-            <div id="profitFields" style="display:none;">
-                <input type="number" inputmode="decimal" id="profitAmount" placeholder="Сумма (₽)" value="1000">
-                <input type="number" inputmode="decimal" id="profitPercent" placeholder="Процент (20-92)" value="92">
-                <div id="profitPreview" style="background:#0A2A1A; padding:10px; border-radius:20px; margin:10px 0;">💵 Итог: 0 ₽</div>
-                <textarea id="profitComment" placeholder="Комментарий"></textarea>
-                <button id="submitProfitBtn">✅ Добавить</button>
-            </div>
-            <div id="lossFields" style="display:none;">
-                <input type="number" inputmode="decimal" id="lossAmount" placeholder="Сумма убытка (₽)" value="1000">
-                <textarea id="lossComment" placeholder="Комментарий"></textarea>
-                <button id="submitLossBtn" class="danger">❌ Добавить убыток</button>
-            </div>
-            <button id="closeAddModal" class="secondary">Отмена</button>
         `;
         
-        // Инициализируем селектор валют
-        buildCurrencySelector();
+        // Строим селектор валют
+        buildCurrencySelector('currencySelectorContainer');
         
         let direction = "LONG";
         const longBtn = document.getElementById('longBtn');
@@ -1300,6 +1331,8 @@
         const lossTypeBtn = document.getElementById('lossTypeBtn');
         const profitFields = document.getElementById('profitFields');
         const lossFields = document.getElementById('lossFields');
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
         
         function updateDirUI() {
             if(direction === "LONG") {
@@ -1310,6 +1343,21 @@
                 longBtn.classList.remove('dir-active-long');
             }
         }
+        
+        // Обработчики для шагов
+        document.getElementById('cancelStep1Btn')?.addEventListener('click', () => {
+            document.getElementById('addTradeModal').style.display = 'none';
+        });
+        document.getElementById('cancelStep2Btn')?.addEventListener('click', () => {
+            document.getElementById('addTradeModal').style.display = 'none';
+        });
+        document.getElementById('backStep2Btn')?.addEventListener('click', () => {
+            step1.classList.add('active');
+            step2.classList.remove('active');
+            selectedPair = null;
+            buildCurrencySelector('currencySelectorContainer');
+        });
+        
         longBtn.onclick = () => { direction = "LONG"; updateDirUI(); };
         shortBtn.onclick = () => { direction = "SHORT"; updateDirUI(); };
         updateDirUI();
@@ -1342,7 +1390,7 @@
                 const profit = amount * percent / 100;
                 addTrade({
                     id: Date.now(), date: dateStr, time: document.getElementById('tradeTime').value,
-                    instrument: selectedPair || "EUR/USD", direction: direction,
+                    instrument: selectedPair, direction: direction,
                     amount: amount, payoutPercent: percent, profit: profit, comment: comment, isLoss: false
                 }, isGlobal);
                 document.getElementById('addTradeModal').style.display = 'none';
@@ -1358,16 +1406,13 @@
                 if(amount <= 0) return alert("Введите сумму");
                 addTrade({
                     id: Date.now(), date: dateStr, time: document.getElementById('tradeTime').value,
-                    instrument: selectedPair || "EUR/USD", direction: direction,
+                    instrument: selectedPair, direction: direction,
                     amount: amount, payoutPercent: null, profit: -amount, comment: comment, isLoss: true
                 }, isGlobal);
                 document.getElementById('addTradeModal').style.display = 'none';
             };
         };
         
-        document.getElementById('closeAddModal').onclick = () => {
-            document.getElementById('addTradeModal').style.display = 'none';
-        };
         document.getElementById('addTradeModal').style.display = 'flex';
     }
     
