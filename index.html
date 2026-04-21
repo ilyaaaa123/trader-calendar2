@@ -67,12 +67,19 @@
             color: #0A192F;
         }
         body.light-theme .pair-list {
-            background: #e8edf5;
-            border-color: #c0c8d8;
-        }
-        body.light-theme .pair-item {
             background: #ffffff;
             border-color: #d0d8e8;
+        }
+        body.light-theme .pair-item {
+            background: #f5f7fa;
+            border-bottom-color: #e0e4ec;
+        }
+        body.light-theme .pair-item:hover {
+            background: #e0e4ec;
+        }
+        body.light-theme .search-container input {
+            color: #0A192F;
+            background: #ffffff;
         }
         
         .container { max-width: 900px; margin: 0 auto; }
@@ -176,7 +183,6 @@
             margin: 0;
         }
         
-        /* Стили для поиска валют (один столбик, по алфавиту) */
         .search-container {
             margin-bottom: 16px;
         }
@@ -187,10 +193,6 @@
             color: white;
             background: #0A1A2A;
             border: 1px solid #2E4A6A;
-        }
-        body.light-theme .search-container input {
-            color: #0A192F;
-            background: #ffffff;
         }
         .pair-list {
             max-height: 400px;
@@ -231,16 +233,6 @@
         }
         body.light-theme .pair-item .pair-name {
             color: #4a6a8a;
-        }
-        body.light-theme .pair-list {
-            background: #ffffff;
-            border-color: #d0d8e8;
-        }
-        body.light-theme .pair-item {
-            border-bottom-color: #e0e4ec;
-        }
-        body.light-theme .pair-item:hover {
-            background: #e0e4ec;
         }
         
         .calendar-grid {
@@ -535,7 +527,7 @@
                 </div>
             </div>
         </div>
-        <div class="sub">lifeSilya • 25 валютных пар</div>
+        <div class="sub">lifeSilya • 29 валютных пар</div>
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="calendar">📅 Календарь</button>
@@ -703,6 +695,14 @@
     
     let lossLimit = null;
     let selectedPair = null;
+    
+    // ========== ПОЛУЧИТЬ ТЕКУЩЕЕ ВРЕМЯ ==========
+    function getCurrentTime() {
+        const now = new Date();
+        const hours = now.getHours().toString().padStart(2, '0');
+        const minutes = now.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+    }
     
     try {
         tg = window.Telegram?.WebApp;
@@ -1286,7 +1286,7 @@
         formDiv.innerHTML = `
             <h3>${title} на ${dateStr}</h3>
             <div id="step1" class="step active">
-                <input type="time" id="tradeTime" value="18:00">
+                <input type="time" id="tradeTime" value="${getCurrentTime()}">
                 <div id="currencySelectorContainer"></div>
                 <div class="step-buttons">
                     <button id="cancelStep1Btn" class="secondary">Отмена</button>
