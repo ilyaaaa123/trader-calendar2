@@ -78,48 +78,64 @@
     let currentYear = 2026;
     let currentMonth = 3;
     
+    // Кэширование элементов и констант
+    const calendarEl = document.getElementById('calendar');
+    const tradesEl = document.getElementById('trades');
+    const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+    
     function renderCalendar() {
-        const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
         const firstDay = new Date(currentYear, currentMonth, 1);
         let startOffset = firstDay.getDay();
         startOffset = startOffset === 0 ? 6 : startOffset - 1;
         const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
         
-        let html = `<div style="font-size:18px; font-weight:bold; margin-bottom:10px;">${monthNames[currentMonth]} ${currentYear}</div>
-            <div class="calendar">`;
+        // Быстрая сборка HTML через массив
+        const html = [
+            `<div style="font-size:18px; font-weight:bold; margin-bottom:10px;">${monthNames[currentMonth]} ${currentYear}</div>`,
+            '<div class="calendar">'
+        ];
         
-        const weekdays = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
-        weekdays.forEach(day => html += `<div style="font-weight:bold;">${day}</div>`);
+        for (let i = 0; i < 7; i++) {
+            html.push(`<div style="font-weight:bold;">${weekdays[i]}</div>`);
+        }
         
-        for(let i = 0; i < startOffset; i++) html += '<div></div>';
+        for(let i = 0; i < startOffset; i++) {
+            html.push('<div></div>');
+        }
         
         for(let day = 1; day <= daysInMonth; day++) {
-            html += `<div class="day" data-day="${day}">${day}</div>`;
+            html.push(`<div class="day" data-day="${day}">${day}</div>`);
         }
-        html += `</div>`;
-        document.getElementById('calendar').innerHTML = html;
         
-        document.querySelectorAll('.day').forEach(el => {
-            el.addEventListener('click', () => {
-                const date = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(el.getAttribute('data-day')).padStart(2,'0')}`;
-                showTrades(date);
-            });
-        });
+        html.push('</div>');
+        calendarEl.innerHTML = html.join('');
     }
+    
+    // Делегирование событий
+    calendarEl.addEventListener('click', (e) => {
+        const dayEl = e.target.closest('.day');
+        if (dayEl) {
+            const day = dayEl.getAttribute('data-day');
+            const date = `${currentYear}-${String(currentMonth+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            showTrades(date);
+        }
+    });
     
     function showTrades(date) {
         const dayTrades = trades.filter(t => t.date === date);
+        
         if(dayTrades.length === 0) {
-            document.getElementById('trades').innerHTML = `<p>📭 ${date} — сделок нет</p>`;
+            tradesEl.innerHTML = `<p>📭 ${date} — сделок нет</p>`;
         } else {
-            let html = `<strong>📋 Сделки за ${date}:</strong><br>`;
-            dayTrades.forEach(t => {
-                html += `<div style="background:#0A1A2A; padding:8px; margin-top:8px; border-radius:12px;">
+            const tradeHtml = dayTrades.map(t => 
+                `<div style="background:#0A1A2A; padding:8px; margin-top:8px; border-radius:12px;">
                     ${t.time} | ${t.instrument} | ${t.direction}<br>
                     💰 ${t.amount} ₽ → ${t.profit > 0 ? '+' : ''}${t.profit} ₽
-                </div>`;
-            });
-            document.getElementById('trades').innerHTML = html;
+                </div>`
+            ).join('');
+            
+            tradesEl.innerHTML = `<strong>📋 Сделки за ${date}:</strong><br>${tradeHtml}`;
         }
     }
     
@@ -135,7 +151,6 @@
             profit: 920
         };
         trades.push(newTrade);
-        renderCalendar();
         showTrades(today);
         alert("✅ Тестовая сделка добавлена!");
     });
