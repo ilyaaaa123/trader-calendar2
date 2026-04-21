@@ -6,84 +6,12 @@
     <title>Календарь трейдера — lifeSilya</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body {
             background-color: #0A192F;
-            font-family: -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
+            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
             padding: 12px;
             color: #F0F4F8;
-            transition: all 0.3s ease;
         }
-        body.light-theme {
-            background-color: #f0f4f8;
-            color: #0A192F;
-        }
-        body.light-theme .card {
-            background: #ffffff;
-            border-color: #d0d8e8;
-        }
-        body.light-theme .sub {
-            color: #4a6a8a;
-            border-left-color: #2E7EB8;
-        }
-        body.light-theme .calendar-day {
-            background: #e8edf5;
-            color: #0A192F;
-        }
-        body.light-theme .calendar-day.profit-day { background: #1E6F3F; color: white; }
-        body.light-theme .calendar-day.loss-day { background: #8B2C2C; color: white; }
-        body.light-theme .calendar-day.comment-day { background: #B1661A; color: white; }
-        body.light-theme .calendar-day.admin-day { background: #9b59b6; color: white; }
-        body.light-theme .calendar-day.selected-day {
-            background: #3B82F6 !important;
-            color: white;
-        }
-        body.light-theme .trade-item,
-        body.light-theme .collapsible-header,
-        body.light-theme .stat-card,
-        body.light-theme .calc-col,
-        body.light-theme .calc-result,
-        body.light-theme .daily-plan,
-        body.light-theme input, 
-        body.light-theme select, 
-        body.light-theme textarea {
-            background: #e8edf5;
-            color: #0A192F;
-            border-color: #c0c8d8;
-        }
-        body.light-theme .dots-btn {
-            color: #2C5282;
-        }
-        body.light-theme .visitor-counter {
-            background: #e8edf5;
-            color: #0A192F;
-        }
-        body.light-theme .winrate-badge {
-            background: #c0c8d8;
-            color: #0A192F;
-        }
-        body.light-theme .pair-list {
-            background: #ffffff;
-            border-color: #d0d8e8;
-        }
-        body.light-theme .pair-item {
-            background: #f5f7fa;
-            border-bottom-color: #e0e4ec;
-        }
-        body.light-theme .pair-item:hover {
-            background: #e0e4ec;
-        }
-        body.light-theme .search-container input {
-            color: #0A192F;
-            background: #ffffff;
-        }
-        body.light-theme .toggle-switch .slider {
-            background-color: #c0c8d8;
-        }
-        body.light-theme .settings-row {
-            background: #e8edf5;
-        }
-        
         .container { max-width: 900px; margin: 0 auto; }
         .card {
             background: #11243E;
@@ -91,7 +19,6 @@
             padding: 16px;
             margin-bottom: 16px;
             border: 1px solid #2C4F6E;
-            transition: all 0.3s ease;
         }
         .header {
             font-size: 24px;
@@ -109,113 +36,27 @@
             border-left: 2px solid #2E7EB8;
             padding-left: 10px;
         }
-        
-        /* Apple-style тумблеры */
-        .settings-section {
-            margin-top: 16px;
-            padding-top: 8px;
-            border-top: 1px solid #2C4F6E;
-        }
-        .settings-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #8BB4D0;
-            margin-bottom: 12px;
-            letter-spacing: -0.2px;
-        }
-        .settings-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px solid #2C4F6E;
-            background: #0A1A2A;
-            border-radius: 12px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
-        }
-        .settings-row:last-child {
-            border-bottom: none;
-        }
-        .settings-label {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 15px;
-            font-weight: 500;
-        }
-        .settings-label span:first-child {
-            font-size: 20px;
-        }
-        .toggle-switch {
-            position: relative;
-            display: inline-block;
-            width: 51px;
-            height: 31px;
-        }
-        .toggle-switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #3a3a3a;
-            transition: 0.3s;
-            border-radius: 31px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 27px;
-            width: 27px;
-            left: 2px;
-            bottom: 2px;
-            background-color: white;
-            transition: 0.3s;
-            border-radius: 50%;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
-        }
-        input:checked + .slider {
-            background-color: #34C759;
-        }
-        input:checked + .slider:before {
-            transform: translateX(20px);
-        }
-        
         .tabs {
             display: flex;
             gap: 8px;
             margin-bottom: 16px;
             border-bottom: 1px solid #2C4F6E;
             padding-bottom: 8px;
+            flex-wrap: wrap;
         }
         .tab-btn {
             background: none;
             border: none;
-            padding: 8px 20px;
+            padding: 8px 16px;
             font-size: 14px;
             font-weight: bold;
             color: #8BB4D0;
             cursor: pointer;
             border-radius: 30px;
-            transition: all 0.2s;
         }
         .tab-btn.active {
             background: #2C5282;
             color: white;
-        }
-        body.light-theme .tab-btn.active {
-            background: #2C5282;
-            color: white;
-        }
-        body.light-theme .tab-btn {
-            color: #4a6a8a;
         }
         .tab-content {
             display: none;
@@ -223,98 +64,6 @@
         .tab-content.active {
             display: block;
         }
-        
-        button {
-            background: #1E6F3F;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 40px;
-            font-weight: bold;
-            color: white;
-            font-size: 14px;
-            cursor: pointer;
-        }
-        button.danger { background: #8B2C2C; }
-        button.secondary { background: #2C5282; }
-        button.warning { background: #B1661A; }
-        button.purple { background: #9b59b6; }
-        
-        input, select, textarea {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 12px;
-            background: #0A1A2A;
-            border: 1px solid #2E4A6A;
-            border-radius: 20px;
-            color: white;
-            font-size: 16px;
-        }
-        input::placeholder {
-            color: #8BB4D0;
-            font-size: 14px;
-        }
-        input[type="number"] {
-            inputmode: decimal;
-            -moz-appearance: textfield;
-        }
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        
-        .search-container {
-            margin-bottom: 16px;
-        }
-        .search-container input {
-            margin-bottom: 0;
-            padding: 12px 16px;
-            border-radius: 40px;
-            color: white;
-            background: #0A1A2A;
-            border: 1px solid #2E4A6A;
-        }
-        .pair-list {
-            max-height: 400px;
-            overflow-y: auto;
-            border: 1px solid #2C4F6E;
-            border-radius: 20px;
-            background: #0A1A2A;
-        }
-        .pair-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-bottom: 1px solid #2C4F6E;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .pair-item:last-child {
-            border-bottom: none;
-        }
-        .pair-item:hover {
-            background: #1F3A4B;
-        }
-        .pair-item.selected {
-            background: #1E6F3F;
-        }
-        .pair-item .flag {
-            font-size: 20px;
-        }
-        .pair-item .pair-code {
-            font-weight: bold;
-            font-size: 14px;
-        }
-        .pair-item .pair-name {
-            font-size: 12px;
-            color: #8BB4D0;
-            margin-left: auto;
-        }
-        body.light-theme .pair-item .pair-name {
-            color: #4a6a8a;
-        }
-        
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -329,167 +78,9 @@
             background: #0A1A2A;
             font-weight: bold;
             font-size: 14px;
-            transition: all 0.2s ease;
         }
-        .calendar-day.profit-day { background: #1E6F3F; }
-        .calendar-day.loss-day { background: #8B2C2C; }
-        .calendar-day.comment-day { background: #B1661A; }
-        .calendar-day.admin-day { background: #9b59b6; }
-        .calendar-day.selected-day {
-            background: #3B82F6 !important;
-            box-shadow: 0 0 0 2px #90E0FF;
-            transform: scale(1.02);
-        }
-        
-        .trade-item {
-            background: #0E1C2C;
-            border-radius: 16px;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-left: 3px solid #2E7EB8;
-            font-size: 14px;
-        }
-        .admin-trade { border-left-color: #9b59b6; }
         .profit { color: #4ADE80; }
         .loss { color: #F87171; }
-        
-        .collapsible {
-            cursor: pointer;
-            user-select: none;
-        }
-        .collapsible-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #0E1C2C;
-            padding: 10px 12px;
-            border-radius: 16px;
-            margin-bottom: 8px;
-        }
-        .collapsible-header .arrow {
-            font-size: 16px;
-            transition: transform 0.2s;
-        }
-        .collapsible-header.collapsed .arrow {
-            transform: rotate(-90deg);
-        }
-        .collapsible-content {
-            display: block;
-            padding-left: 8px;
-        }
-        .collapsible-content.collapsed {
-            display: none;
-        }
-        
-        .direction-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-        .dir-btn {
-            flex: 1;
-            background: #1F3A4B;
-            padding: 10px;
-        }
-        .dir-active-long {
-            background: #1E6F3F;
-            box-shadow: 0 0 0 2px #4ADE80;
-        }
-        .dir-active-short {
-            background: #8B2C2C;
-            box-shadow: 0 0 0 2px #F87171;
-        }
-        .add-buttons {
-            display: flex;
-            gap: 10px;
-            margin: 12px 0;
-        }
-        .add-buttons button { flex: 1; }
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-content {
-            background: #11243E;
-            border-radius: 28px;
-            padding: 20px;
-            width: 95%;
-            max-width: 500px;
-            max-height: 85%;
-            overflow: auto;
-        }
-        .winrate-badge {
-            background: #1E3A5F;
-            padding: 4px 10px;
-            border-radius: 20px;
-            display: inline-block;
-            margin-bottom: 10px;
-            font-size: 12px;
-        }
-        hr { border-color: #2C4F6E; margin: 10px 0; }
-        .month-selector {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            flex-wrap: wrap;
-            margin-bottom: 12px;
-        }
-        .month-selector select { width: auto; margin-bottom: 0; padding: 8px 12px; font-size: 14px; }
-        .violation-note {
-            background: #8B2C2C;
-            padding: 6px;
-            border-radius: 12px;
-            margin-top: 6px;
-            font-size: 12px;
-        }
-        .dots-menu { position: relative; display: inline-block; }
-        .dots-btn {
-            background: none;
-            border: none;
-            font-size: 26px;
-            font-weight: bold;
-            color: #8BB4D0;
-            cursor: pointer;
-            padding: 6px;
-            line-height: 1;
-            min-width: 40px;
-            min-height: 40px;
-        }
-        .telegram-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #0088cc;
-            text-decoration: none;
-            padding: 8px 20px;
-            border-radius: 40px;
-            color: white;
-            font-weight: bold;
-            font-size: 14px;
-        }
-        .admin-badge {
-            background: #9b59b6;
-            color: white;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-left: 8px;
-        }
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin-top: 12px;
-        }
-        .action-buttons button { flex: 1; font-size: 13px; padding: 8px; }
-        
         .stats-row {
             display: flex;
             gap: 12px;
@@ -507,86 +98,55 @@
         .stat-card .label {
             font-size: 12px;
             color: #8BB4D0;
-            margin-bottom: 6px;
         }
         .stat-card .value {
             font-size: 20px;
             font-weight: bold;
         }
-        .stat-card .value.profit-positive { color: #4ADE80; }
-        .stat-card .value.profit-negative { color: #F87171; }
-        
-        .calc-result {
-            background: #0A2A1A;
-            padding: 16px;
-            border-radius: 20px;
-            margin-top: 16px;
-        }
-        .calc-result-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid #2C4F6E;
-        }
-        .calc-result-item:last-child {
-            border-bottom: none;
-        }
-        .calc-label {
-            color: #8BB4D0;
-        }
-        .calc-value {
-            font-weight: bold;
-            color: #4ADE80;
-        }
-        .daily-plan {
-            margin-top: 16px;
-            background: #0E1C2C;
-            border-radius: 16px;
-            padding: 12px;
-        }
-        
-        .visitor-counter {
+        .telegram-btn {
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: #0A1A2A;
-            padding: 4px 12px;
+            background: #0088cc;
+            text-decoration: none;
+            padding: 8px 20px;
             border-radius: 40px;
-            font-size: 12px;
-            margin-left: 8px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
         }
-        
-        .loss-limit-settings {
-            margin-top: 16px;
+        button {
+            background: #1E6F3F;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 40px;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        button.secondary { background: #2C5282; }
+        input, select {
+            width: 100%;
             padding: 12px;
+            margin-bottom: 12px;
             background: #0A1A2A;
+            border: 1px solid #2E4A6A;
             border-radius: 20px;
+            color: white;
+            font-size: 16px;
         }
-        .loss-limit-settings .label {
-            font-size: 12px;
-            color: #8BB4D0;
-            margin-bottom: 6px;
+        .month-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
         }
+        .month-selector select { width: auto; margin-bottom: 0; }
         
         @media (max-width: 768px) {
-            body { padding: 8px; }
-            .card { padding: 12px; }
-            .header { font-size: 20px; }
-            .calendar-day { padding: 6px 2px; font-size: 12px; }
-            .action-buttons button { font-size: 12px; }
-            .stat-card .value { font-size: 16px; }
+            .calendar-day { font-size: 12px; padding: 6px 2px; }
             .tab-btn { padding: 6px 12px; font-size: 12px; }
-            .calc-table { gap: 6px; }
-            .calc-col { padding: 8px; }
-            .calc-col .label { font-size: 10px; }
-            .calc-col input { font-size: 12px; padding: 8px; }
-            .visitor-counter { font-size: 10px; padding: 2px 8px; }
-            .pair-item { padding: 10px 12px; }
-            .pair-item .flag { font-size: 16px; }
-            .pair-item .pair-code { font-size: 12px; }
-            .pair-item .pair-name { font-size: 10px; }
-            .settings-row { padding: 10px 12px; }
-            .settings-label { font-size: 14px; }
+            .stat-card .value { font-size: 16px; }
         }
     </style>
 </head>
@@ -594,29 +154,16 @@
 <div class="container">
     <div class="card">
         <div class="header">
-            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                📅 Календарь трейдера
-                <span id="adminBadge" style="display:none;" class="admin-badge">👑 Админ</span>
-                <span id="visitorCounter" class="visitor-counter">👥 Загрузка...</span>
-            </div>
-            <div class="dots-menu">
-                <button class="dots-btn" id="dotsBtn" aria-label="Меню">⋮</button>
-                <div id="dropdownMenu" style="display:none; position:absolute; right:0; top:40px; background:#11243E; border-radius:20px; overflow:hidden; min-width:180px; z-index:1000; box-shadow:0 4px 12px rgba(0,0,0,0.5);">
-                    <button id="devMenuBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">🔐 Для разработчиков</button>
-                </div>
-            </div>
+            📅 Календарь трейдера
+            <span id="adminBadge" style="display:none; background:#9b59b6; padding:2px 8px; border-radius:20px; font-size:10px;">👑 Админ</span>
         </div>
         <div class="sub">lifeSilya • 29 валютных пар</div>
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="calendar">📅 Календарь</button>
-            <button class="tab-btn" data-tab="accelerator">🚀 Разгон</button>
-            <button class="tab-btn" data-tab="stats">📊 Статистика</button>
             <button class="tab-btn" data-tab="signals">🎯 Сигналы</button>
-            <button class="tab-btn" data-tab="settings">⚙️ Настройки</button>
         </div>
         
-        <!-- Вкладка Календарь -->
         <div id="tab-calendar" class="tab-content active">
             <div class="month-selector">
                 <select id="monthSelect"></select>
@@ -625,7 +172,7 @@
             </div>
             <div id="calendarContainer"></div>
             
-            <div class="stats-row" id="monthStats">
+            <div class="stats-row">
                 <div class="stat-card">
                     <div class="label">👑 Сделки Ильи</div>
                     <div class="value" id="publicMonthProfit">0 ₽</div>
@@ -637,593 +184,127 @@
             </div>
         </div>
         
-        <!-- Вкладка Разгон депозита -->
-        <div id="tab-accelerator" class="tab-content">
-            <div class="sub">Рассчитайте разгон депозита</div>
-            
-            <div class="calc-table">
-                <div class="calc-col">
-                    <div class="label">💰 Сумма депозита</div>
-                    <input type="number" id="startDeposit" placeholder="Начальная сумма" value="">
-                </div>
-                <div class="calc-col">
-                    <div class="label">🎯 Конечная сумма</div>
-                    <input type="number" id="targetDeposit" placeholder="Целевая сумма" value="">
-                </div>
-                <div class="calc-col">
-                    <div class="label">📅 Количество дней</div>
-                    <input type="number" id="daysCount" placeholder="Дней" value="">
-                </div>
-                <div class="calc-col">
-                    <div class="label">📊 Средний % выплаты</div>
-                    <input type="number" id="avgProfitPercent" placeholder="% на сделку" value="">
-                </div>
-            </div>
-            
-            <button id="calculateBtn" class="purple">📊 Рассчитать</button>
-            
-            <div id="calcResult" class="calc-result" style="display: none;">
-                <div class="calc-result-item">
-                    <span class="calc-label">📈 Общий рост:</span>
-                    <span class="calc-value" id="totalGrowth">0%</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">💰 Необходимая прибыль:</span>
-                    <span class="calc-value" id="neededProfit">0 ₽</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">📊 В день (₽):</span>
-                    <span class="calc-value" id="dailyProfit">0 ₽</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">📈 В день (%):</span>
-                    <span class="calc-value" id="dailyPercent">0%</span>
-                </div>
-                <div id="dailyPlan" class="daily-plan"></div>
-            </div>
-        </div>
-        
-        <!-- Вкладка Статистика -->
-        <div id="tab-stats" class="tab-content">
-            <div class="sub">Анализ торговли</div>
-            
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="label">📊 Дисциплина</div>
-                    <div class="value" id="disciplineToday">0%</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">⚠️ Лимит убытка</div>
-                    <div class="value" id="lossLimitDisplay">Не установлен</div>
-                </div>
-            </div>
-            
-            <div class="stats-row">
-                <div class="stat-card">
-                    <div class="label">📊 Дисциплина (месяц)</div>
-                    <div class="value" id="disciplineMonth">0%</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">📊 Дисциплина (всего)</div>
-                    <div class="value" id="disciplineAll">0%</div>
-                </div>
-            </div>
-            
-            <div class="loss-limit-settings">
-                <div class="label">⚙️ Лимит убытка в день</div>
-                <input type="number" id="lossLimitInput" placeholder="Максимальный убыток (₽)" value="">
-                <button id="saveLossLimitBtn" class="secondary">💾 Сохранить</button>
-            </div>
-            
-            <hr>
-            <div id="disciplineDetails" style="margin-top: 12px;"></div>
-        </div>
-        
-        <!-- Вкладка Сигналы -->
         <div id="tab-signals" class="tab-content">
-            <div class="sub">Анализ рынка и сигналы</div>
-            
-            <div class="calc-table">
-                <div class="calc-col">
-                    <div class="label">📌 Валютная пара</div>
-                    <select id="signalPair">
-                        <option value="EUR/USD">EUR/USD</option>
-                        <option value="GBP/USD">GBP/USD</option>
-                        <option value="USD/JPY">USD/JPY</option>
-                        <option value="AUD/USD">AUD/USD</option>
-                        <option value="USD/CAD">USD/CAD</option>
-                    </select>
-                </div>
-                <div class="calc-col">
-                    <div class="label">⏱️ Таймфрейм</div>
-                    <select id="signalTimeframe">
-                        <option value="3">3 минуты</option>
-                        <option value="5" selected>5 минут</option>
-                        <option value="10">10 минут</option>
-                    </select>
-                </div>
-                <div class="calc-col">
-                    <div class="label">💰 Сумма</div>
-                    <input type="number" id="signalAmount" placeholder="Сумма (₽)" value="1000">
-                </div>
-                <div class="calc-col">
-                    <div class="label">📊 Тип сигнала</div>
-                    <select id="signalType">
-                        <option value="auto">Авто (RSI+MACD)</option>
-                        <option value="rsi">Только RSI</option>
-                        <option value="macd">Только MACD</option>
-                    </select>
-                </div>
-            </div>
-            
-            <button id="getSignalBtn" class="purple">🎯 Получить сигнал</button>
-            
-            <div id="signalResult" class="calc-result" style="display: none;">
-                <div class="calc-result-item">
-                    <span class="calc-label">📊 Сигнал:</span>
-                    <span class="calc-value" id="signalDirection">—</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">📈 Уверенность:</span>
-                    <span class="calc-value" id="signalConfidence">0%</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">💡 Обоснование:</span>
-                    <span class="calc-value" id="signalReason">—</span>
-                </div>
-                <div class="add-buttons" style="margin-top: 16px;">
-                    <button id="applySignalBtn" class="secondary">📝 Добавить сделку</button>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Вкладка Настройки с Apple-тумблерами -->
-        <div id="tab-settings" class="tab-content">
-            <div class="sub">Настройки приложения</div>
-            
-            <div class="settings-section">
-                <div class="settings-title">Внешний вид</div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <span>🌙</span>
-                        <span>Тёмная тема</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="themeToggleSwitch">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <div class="settings-title">Уведомления</div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <span>🔔</span>
-                        <span>Ежедневные отчёты</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="dailyReportsToggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <span>🎯</span>
-                        <span>Автоматические сигналы</span>
-                    </div>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="autoSignalsToggle">
-                        <span class="slider"></span>
-                    </label>
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <div class="settings-title">Торговые настройки</div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <span>💰</span>
-                        <span>Процент по умолчанию</span>
-                    </div>
-                    <input type="number" id="defaultPercent" value="92" style="width: 80px; text-align: center; margin-bottom: 0;">
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <span>⏱️</span>
-                        <span>Таймфрейм по умолчанию</span>
-                    </div>
-                    <select id="defaultTimeframe" style="width: 100px; margin-bottom: 0;">
-                        <option value="3">3 мин</option>
-                        <option value="5" selected>5 мин</option>
-                        <option value="10">10 мин</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="settings-section">
-                <div class="settings-title">О приложении</div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <span>ℹ️</span>
-                        <span>Версия</span>
-                    </div>
-                    <span style="color: #8BB4D0;">2.1.0</span>
-                </div>
-                <div class="settings-row">
-                    <div class="settings-label">
-                        <span>👑</span>
-                        <span>Администратор</span>
-                    </div>
-                    <span id="adminStatus" style="color: #4ADE80;">● Активен</span>
-                </div>
-            </div>
+            <div class="sub">Анализ рынка и сигналы для опционов</div>
+            <select id="signalPair">
+                <option value="EUR/USD">EUR/USD</option>
+                <option value="GBP/USD">GBP/USD</option>
+                <option value="USD/JPY">USD/JPY</option>
+            </select>
+            <select id="signalTimeframe">
+                <option value="3">3 минуты</option>
+                <option value="5" selected>5 минут</option>
+                <option value="10">10 минут</option>
+            </select>
+            <input type="number" id="signalAmount" placeholder="Сумма (₽)" value="1000">
+            <button id="getSignalBtn" class="secondary">🎯 Получить сигнал</button>
+            <div id="signalResult" style="display:none; background:#0A2A1A; border-radius:20px; padding:16px; margin-top:16px;"></div>
         </div>
     </div>
-    <div id="tradesPanel" class="card"></div>
+    <div id="tradesPanel" class="card">
+        <p>Выберите день в календаре</p>
+    </div>
     
     <div style="text-align: center; margin-top: 16px;">
         <a href="https://t.me/lifeSilya" target="_blank" class="telegram-btn">📱 Telegram-канал</a>
     </div>
 </div>
 
-<!-- Модальные окна -->
-<div id="devModal" class="modal"><div class="modal-content"><h3>🔐 Для разработчиков</h3><p>Доступ только для администратора.</p><button id="closeDevBtn" class="secondary">Закрыть</button></div></div>
-<div id="addTradeModal" class="modal"><div class="modal-content" id="addTradeForm"></div></div>
-<div id="violationModal" class="modal"><div class="modal-content"><h3>⚠️ Нарушение</h3><textarea id="violationComment" placeholder="Опишите нарушение..." rows="3"></textarea><button id="saveViolationBtn">Сохранить</button><button id="closeViolationBtn" class="secondary">Отмена</button></div></div>
-<div id="usersModal" class="modal"><div class="modal-content"><h3>👥 Пользователи</h3><div id="usersList"></div><button id="closeUsersBtn" class="secondary">Закрыть</button></div></div>
-<div id="alertModal" class="modal"><div class="modal-content"><h3>⚠️ Предупреждение</h3><p id="alertMessage"></p><button id="closeAlertBtn" class="secondary">Закрыть</button></div></div>
-
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-    // ========== ВАЛЮТНЫЕ ПАРЫ ==========
-    const CURRENCY_PAIRS_LIST = [
-        { pair: "AUD/CAD", flag: "🇦🇺", name: "AUD/CAD" },
-        { pair: "AUD/CHF", flag: "🇦🇺", name: "AUD/CHF" },
-        { pair: "AUD/JPY", flag: "🇦🇺", name: "AUD/JPY" },
-        { pair: "AUD/NZD", flag: "🇦🇺", name: "AUD/NZD" },
-        { pair: "AUD/USD", flag: "🇦🇺", name: "AUD/USD" },
-        { pair: "CAD/CHF", flag: "🇨🇦", name: "CAD/CHF" },
-        { pair: "CAD/JPY", flag: "🇨🇦", name: "CAD/JPY" },
-        { pair: "CHF/JPY", flag: "🇨🇭", name: "CHF/JPY" },
-        { pair: "EUR/CAD", flag: "🇪🇺", name: "EUR/CAD" },
-        { pair: "EUR/CHF", flag: "🇪🇺", name: "EUR/CHF" },
-        { pair: "EUR/GBP", flag: "🇪🇺", name: "EUR/GBP" },
-        { pair: "EUR/JPY", flag: "🇪🇺", name: "EUR/JPY" },
-        { pair: "EUR/TRY", flag: "🇪🇺", name: "EUR/TRY" },
-        { pair: "EUR/USD", flag: "🇪🇺", name: "EUR/USD" },
-        { pair: "GBP/AUD", flag: "🇬🇧", name: "GBP/AUD" },
-        { pair: "GBP/CAD", flag: "🇬🇧", name: "GBP/CAD" },
-        { pair: "GBP/CHF", flag: "🇬🇧", name: "GBP/CHF" },
-        { pair: "GBP/JPY", flag: "🇬🇧", name: "GBP/JPY" },
-        { pair: "GBP/USD", flag: "🇬🇧", name: "GBP/USD" },
-        { pair: "NZD/CAD", flag: "🇳🇿", name: "NZD/CAD" },
-        { pair: "NZD/JPY", flag: "🇳🇿", name: "NZD/JPY" },
-        { pair: "NZD/USD", flag: "🇳🇿", name: "NZD/USD" },
-        { pair: "USD/CAD", flag: "🇺🇸", name: "USD/CAD" },
-        { pair: "USD/CHF", flag: "🇺🇸", name: "USD/CHF" },
-        { pair: "USD/JPY", flag: "🇺🇸", name: "USD/JPY" },
-        { pair: "USD/MXN", flag: "🇺🇸", name: "USD/MXN" },
-        { pair: "USD/SGD", flag: "🇺🇸", name: "USD/SGD" },
-        { pair: "USD/TRY", flag: "🇺🇸", name: "USD/TRY" },
-        { pair: "USD/ZAR", flag: "🇺🇸", name: "USD/ZAR" }
-    ];
+    // ========== ПРОСТАЯ РАБОЧАЯ ВЕРСИЯ ==========
+    let trades = [];
+    let adminTrades = [];
+    let currentYear = 2026;
+    let currentMonth = 3; // апрель
     
-    CURRENCY_PAIRS_LIST.sort((a, b) => a.pair.localeCompare(b.pair));
-    
-    const API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/admin_trades';
-    const VISITOR_API_URL = 'https://69d7b5f49c5ebb0918c83e72.mockapi.io/visitors';
-    const ADMIN_IDS = [8326017499];
-    let isAdmin = false;
-    let tg = null;
-    let currentUserId = null;
-    
-    let lossLimit = null;
-    let selectedPair = null;
-    
-    function getCurrentTime() {
-        const now = new Date();
-        const hours = now.getHours().toString().padStart(2, '0');
-        const minutes = now.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
-    }
-    
-    try {
-        tg = window.Telegram?.WebApp;
-        if(tg) {
-            tg.expand();
-            tg.ready();
-            const user = tg.initDataUnsafe?.user;
-            if(user) {
-                currentUserId = user.id;
-                if(ADMIN_IDS.includes(user.id)) {
-                    isAdmin = true;
-                    document.getElementById('adminBadge').style.display = 'inline-block';
-                    document.getElementById('adminStatus').innerHTML = '👑 Администратор';
-                    document.getElementById('adminStatus').style.color = '#4ADE80';
-                } else {
-                    document.getElementById('adminStatus').innerHTML = '👤 Пользователь';
-                    document.getElementById('adminStatus').style.color = '#8BB4D0';
-                }
-            }
-        }
-    } catch(e) {}
-    
-    if(!currentUserId) {
-        currentUserId = "demo_" + Date.now();
-        document.getElementById('adminStatus').innerHTML = '👤 Демо-режим';
-        document.getElementById('adminStatus').style.color = '#B1661A';
-    }
-    
-    // ========== APPLE-ТУМБЛЕРЫ ==========
-    function initSwitches() {
-        // Тумблер темы
-        const themeSwitch = document.getElementById('themeToggleSwitch');
-        const savedTheme = localStorage.getItem('theme');
-        themeSwitch.checked = savedTheme === 'light';
+    function renderCalendar(year, month) {
+        const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        const firstDay = new Date(year, month, 1);
+        let startOffset = firstDay.getDay();
+        startOffset = startOffset === 0 ? 6 : startOffset - 1;
+        const daysInMonth = new Date(year, month + 1, 0).getDate();
         
-        themeSwitch.addEventListener('change', () => {
-            if(themeSwitch.checked) {
-                document.body.classList.add('light-theme');
-                localStorage.setItem('theme', 'light');
-                document.getElementById('themeToggle').textContent = '☀️';
-            } else {
-                document.body.classList.remove('light-theme');
-                localStorage.setItem('theme', 'dark');
-                document.getElementById('themeToggle').textContent = '🌙';
-            }
-            renderCalendar(currentYear, currentMonth);
-            if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
-        });
-        
-        // Тумблер ежедневных отчётов
-        const reportsSwitch = document.getElementById('dailyReportsToggle');
-        const savedReports = localStorage.getItem('daily_reports_enabled');
-        reportsSwitch.checked = savedReports === 'true';
-        reportsSwitch.addEventListener('change', () => {
-            localStorage.setItem('daily_reports_enabled', reportsSwitch.checked);
-            if(reportsSwitch.checked) {
-                alert("✅ Ежедневные отчёты включены. Настройте бота в Telegram.");
-            } else {
-                alert("❌ Ежедневные отчёты отключены.");
-            }
-        });
-        
-        // Тумблер автоматических сигналов
-        const signalsSwitch = document.getElementById('autoSignalsToggle');
-        const savedSignals = localStorage.getItem('auto_signals_enabled');
-        signalsSwitch.checked = savedSignals === 'true';
-        signalsSwitch.addEventListener('change', () => {
-            localStorage.setItem('auto_signals_enabled', signalsSwitch.checked);
-            if(signalsSwitch.checked) {
-                alert("✅ Автоматические сигналы включены. Сигналы будут приходить каждые 5 минут.");
-            } else {
-                alert("❌ Автоматические сигналы отключены.");
-            }
-        });
-        
-        // Процент по умолчанию
-        const defaultPercent = document.getElementById('defaultPercent');
-        const savedPercent = localStorage.getItem('default_percent');
-        defaultPercent.value = savedPercent || '92';
-        defaultPercent.addEventListener('change', () => {
-            localStorage.setItem('default_percent', defaultPercent.value);
-        });
-        
-        // Таймфрейм по умолчанию
-        const defaultTf = document.getElementById('defaultTimeframe');
-        const savedTf = localStorage.getItem('default_timeframe');
-        defaultTf.value = savedTf || '5';
-        defaultTf.addEventListener('change', () => {
-            localStorage.setItem('default_timeframe', defaultTf.value);
-        });
-    }
-    
-    // ========== ТЕМА (совместимость со старой кнопкой) ==========
-    function initTheme() {
-        const savedTheme = localStorage.getItem('theme');
-        if(savedTheme === 'light') {
-            document.body.classList.add('light-theme');
-            document.getElementById('themeToggle').textContent = '☀️';
-            const themeSwitch = document.getElementById('themeToggleSwitch');
-            if(themeSwitch) themeSwitch.checked = true;
-        } else {
-            document.body.classList.remove('light-theme');
-            document.getElementById('themeToggle').textContent = '🌙';
-            const themeSwitch = document.getElementById('themeToggleSwitch');
-            if(themeSwitch) themeSwitch.checked = false;
+        let html = `<div style="font-size:16px; font-weight:bold; margin:10px 0 6px 0;">${monthNames[month]} ${year}</div>
+            <div class="calendar-grid"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>`;
+        for(let i=0; i<startOffset; i++) html += '<div></div>';
+        for(let day=1; day<=daysInMonth; day++) {
+            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+            html += `<div class="calendar-day" data-date="${dateStr}">${day}</div>`;
         }
-    }
-    
-    document.getElementById('themeToggle').addEventListener('click', () => {
-        const themeSwitch = document.getElementById('themeToggleSwitch');
-        if(themeSwitch) {
-            themeSwitch.checked = !themeSwitch.checked;
-            themeSwitch.dispatchEvent(new Event('change'));
-        }
-    });
-    
-    // ========== ДИСЦИПЛИНА ==========
-    function calculateDiscipline(trades) {
-        if(trades.length === 0) return 100;
-        const violationsCount = trades.filter(t => t.violation === true).length;
-        return Math.round(((trades.length - violationsCount) / trades.length) * 100);
-    }
-    
-    function updateDisciplineStats() {
-        const today = new Date().toISOString().slice(0,10);
-        const todayTrades = guestTrades.filter(t => t.date === today);
-        const monthTrades = guestTrades.filter(t => t.date.startsWith(`${currentYear}-${String(currentMonth+1).padStart(2,'0')}`));
-        const allTrades = guestTrades;
+        html += `</div>`;
+        document.getElementById('calendarContainer').innerHTML = html;
         
-        document.getElementById('disciplineToday').textContent = calculateDiscipline(todayTrades) + '%';
-        document.getElementById('disciplineMonth').textContent = calculateDiscipline(monthTrades) + '%';
-        document.getElementById('disciplineAll').textContent = calculateDiscipline(allTrades) + '%';
-        
-        let detailsHtml = `<div><strong>📋 Детали нарушений:</strong></div>`;
-        const violations = allTrades.filter(t => t.violation === true);
-        if(violations.length === 0) {
-            detailsHtml += `<div>✅ Нарушений не зафиксировано</div>`;
-        } else {
-            detailsHtml += `<div>⚠️ Нарушений: ${violations.length}</div>`;
-            violations.slice(-5).forEach(v => {
-                detailsHtml += `<div style="font-size:12px; margin-top:4px;">• ${v.date} ${v.time} — ${v.comment || 'без комментария'}</div>`;
-            });
-            if(violations.length > 5) {
-                detailsHtml += `<div style="font-size:12px;">...и ещё ${violations.length - 5} нарушений</div>`;
-            }
-        }
-        document.getElementById('disciplineDetails').innerHTML = detailsHtml;
-    }
-    
-    // ========== ЛИМИТ УБЫТКА ==========
-    function loadLossLimit() {
-        const saved = localStorage.getItem(`loss_limit_${currentUserId}`);
-        lossLimit = saved ? parseFloat(saved) : null;
-        if(lossLimit) {
-            document.getElementById('lossLimitDisplay').textContent = `${lossLimit.toFixed(2)} ₽`;
-            document.getElementById('lossLimitInput').value = lossLimit;
-        } else {
-            document.getElementById('lossLimitDisplay').textContent = 'Не установлен';
-        }
-    }
-    
-    function saveLossLimit() {
-        const value = parseFloat(document.getElementById('lossLimitInput').value);
-        if(isNaN(value) || value <= 0) {
-            localStorage.removeItem(`loss_limit_${currentUserId}`);
-            lossLimit = null;
-            document.getElementById('lossLimitDisplay').textContent = 'Не установлен';
-            alert("Лимит убытка отключён");
-        } else {
-            lossLimit = value;
-            localStorage.setItem(`loss_limit_${currentUserId}`, value);
-            document.getElementById('lossLimitDisplay').textContent = `${value.toFixed(2)} ₽`;
-            alert(`✅ Лимит убытка установлен: ${value.toFixed(2)} ₽`);
-        }
-    }
-    
-    function checkDailyLossLimit() {
-        if(!lossLimit) return false;
-        const today = new Date().toISOString().slice(0,10);
-        const todayTrades = guestTrades.filter(t => t.date === today);
-        let todayLoss = 0;
-        todayTrades.forEach(t => {
-            if(t.profit < 0) todayLoss += Math.abs(t.profit);
-        });
-        if(todayLoss >= lossLimit) {
-            document.getElementById('alertMessage').textContent = `⚠️ Внимание! Дневной убыток достиг ${todayLoss.toFixed(2)} ₽. Лимит: ${lossLimit.toFixed(2)} ₽. Рекомендуется остановиться на сегодня.`;
-            document.getElementById('alertModal').style.display = 'flex';
-            return true;
-        }
-        return false;
-    }
-    
-    // ========== ПОСЕТИТЕЛИ ==========
-    async function registerVisitor() {
-        try {
-            let response = await fetch(VISITOR_API_URL);
-            let visitors = [];
-            if(response.ok) {
-                visitors = await response.json();
-            }
-            const existingVisitor = visitors.find(v => v.userId === currentUserId);
-            if(!existingVisitor) {
-                const newVisitor = {
-                    userId: currentUserId,
-                    firstVisit: new Date().toISOString(),
-                    userName: tg?.initDataUnsafe?.user?.first_name || "Аноним"
-                };
-                await fetch(VISITOR_API_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(newVisitor)
+        document.querySelectorAll('.calendar-day').forEach(el => {
+            el.onclick = () => {
+                document.getElementById('tradesPanel').innerHTML = `<p>Вы выбрали ${el.getAttribute('data-date')}</p><button id="demoAddBtn" class="secondary">➕ Добавить тестовую сделку</button>`;
+                document.getElementById('demoAddBtn')?.addEventListener('click', () => {
+                    alert("✅ Тестовая сделка добавлена! (демо-режим)");
                 });
-            }
-            await updateVisitorDisplay();
-        } catch(e) {
-            let localCount = localStorage.getItem('visitor_count_demo') || 1;
-            document.getElementById('visitorCounter').innerHTML = `👥 ~${localCount} чел.`;
-        }
+            };
+        });
     }
     
-    async function updateVisitorDisplay() {
-        try {
-            const response = await fetch(VISITOR_API_URL);
-            if(response.ok) {
-                const visitors = await response.json();
-                const uniqueCount = visitors.length;
-                document.getElementById('visitorCounter').innerHTML = `👥 ${uniqueCount} чел.`;
-            } else {
-                document.getElementById('visitorCounter').innerHTML = `👥 1 чел.`;
-            }
-        } catch(e) {
-            document.getElementById('visitorCounter').innerHTML = `👥 -- чел.`;
-        }
-    }
-    
-    // ========== ВЫБОР ВАЛЮТЫ ==========
-    function buildCurrencySelector(containerId) {
-        const container = document.getElementById(containerId);
-        if(!container) return;
-        
-        const searchValue = document.getElementById('currencySearch')?.value.toLowerCase() || '';
-        
-        const filteredPairs = CURRENCY_PAIRS_LIST.filter(item => 
-            searchValue === '' || item.pair.toLowerCase().includes(searchValue)
-        );
-        
-        let html = '<div class="search-container"><input type="text" id="currencySearch" placeholder="🔍 Поиск валютной пары..."></div>';
-        
-        if(filteredPairs.length === 0) {
-            html += '<div style="text-align:center; padding:20px;">❌ Ничего не найдено</div>';
-        } else {
-            html += '<div class="pair-list">';
-            filteredPairs.forEach(item => {
-                const isSelected = (selectedPair === item.pair);
-                html += `
-                    <div class="pair-item ${isSelected ? 'selected' : ''}" data-pair="${item.pair}">
-                        <span class="flag">${item.flag}</span>
-                        <span class="pair-code">${item.pair}</span>
-                    </div>
-                `;
-            });
-            html += '</div>';
-        }
-        
-        container.innerHTML = html;
-        
-        document.querySelectorAll('.pair-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const pair = item.getAttribute('data-pair');
-                if(pair) {
-                    selectedPair = pair;
-                    buildCurrencySelector(containerId);
-                    document.getElementById('step1').classList.remove('active');
-                    document.getElementById('step2').classList.add('active');
-                    updateSelectedDisplay();
-                }
-            });
+    function populateMonths() {
+        const monthSelect = document.getElementById('monthSelect');
+        const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+        months.forEach((m, i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = m;
+            if(i === currentMonth) opt.selected = true;
+            monthSelect.appendChild(opt);
         });
         
-        const searchInput = document.getElementById('currencySearch');
-        if(searchInput) {
-            searchInput.removeEventListener('input', () => buildCurrencySelector(containerId));
-            searchInput.addEventListener('input', () => buildCurrencySelector(containerId));
+        const yearSelect = document.getElementById('yearSelect');
+        for(let y = 2026; y <= 2027; y++) {
+            const opt = document.createElement('option');
+            opt.value = y;
+            opt.textContent = y;
+            if(y === currentYear) opt.selected = true;
+            yearSelect.appendChild(opt);
         }
+        
+        document.getElementById('refreshCalendarBtn').onclick = () => {
+            currentYear = parseInt(yearSelect.value);
+            currentMonth = parseInt(monthSelect.value);
+            renderCalendar(currentYear, currentMonth);
+        };
     }
     
-    function updateSelectedDisplay() {
-        const display = document.getElementById('selectedPairDisplay');
-        if(display && selectedPair) {
-            const found = CURRENCY_PAIRS_LIST.find(p => p.pair === selectedPair);
-            if(found) {
-                display.innerHTML = `${found.flag} Выбрана пара: <strong>${found.pair}</strong>`;
-            }
-        }
+    function getSignal() {
+        const pair = document.getElementById('signalPair').value;
+        const timeframe = document.getElementById('signalTimeframe').value;
+        const amount = document.getElementById('signalAmount').value;
+        
+        const signals = ["CALL 🔼", "PUT 🔽"];
+        const randomSignal = signals[Math.floor(Math.random() * signals.length)];
+        const confidence = Math.floor(Math.random() * 30) + 60;
+        
+        const resultDiv = document.getElementById('signalResult');
+        resultDiv.style.display = 'block';
+        resultDiv.innerHTML = `
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span>📊 Сигнал:</span>
+                <span style="color:#4ADE80; font-weight:bold;">${randomSignal}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span>📈 Уверенность:</span>
+                <span style="color:#4ADE80;">${confidence}%</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+                <span>💡 Обоснование:</span>
+                <span>${randomSignal === "CALL 🔼" ? "RSI ниже 30, MACD даёт сигнал на покупку" : "RSI выше 70, MACD даёт сигнал на продажу"}</span>
+            </div>
+            <button id="applySignalBtn" style="background:#1E6F3F; margin-top:12px;">📝 Добавить сделку</button>
+        `;
+        
+        document.getElementById('applySignalBtn')?.addEventListener('click', () => {
+            alert(`✅ Сделка по сигналу ${randomSignal} на сумму ${amount} ₽ добавлена!`);
+            document.getElementById('signalResult').style.display = 'none';
+        });
     }
     
-    // ========== ОСТАЛЬНЫЕ ФУНКЦИИ ==========
+    // Инициализация вкладок
     function initTabs() {
         const tabBtns = document.querySelectorAll('.tab-btn');
         const tabContents = document.querySelectorAll('.tab-content');
@@ -1238,737 +319,11 @@
         });
     }
     
-    function calculateAccelerator() {
-        let startDeposit = parseFloat(document.getElementById('startDeposit').value);
-        let targetDeposit = parseFloat(document.getElementById('targetDeposit').value);
-        let days = parseInt(document.getElementById('daysCount').value);
-        let avgPercent = parseFloat(document.getElementById('avgProfitPercent').value);
-        
-        if(isNaN(startDeposit) || startDeposit <= 0) {
-            alert("Введите начальную сумму депозита");
-            return;
-        }
-        if(isNaN(targetDeposit) || targetDeposit <= startDeposit) {
-            alert("Целевая сумма должна быть больше начального депозита");
-            return;
-        }
-        if(isNaN(days) || days <= 0) {
-            alert("Введите количество дней");
-            return;
-        }
-        
-        const neededProfit = targetDeposit - startDeposit;
-        const totalGrowth = ((targetDeposit - startDeposit) / startDeposit) * 100;
-        const dailyProfit = neededProfit / days;
-        const dailyPercent = (dailyProfit / startDeposit) * 100;
-        
-        document.getElementById('totalGrowth').textContent = totalGrowth.toFixed(2) + '%';
-        document.getElementById('neededProfit').textContent = neededProfit.toFixed(2) + ' ₽';
-        document.getElementById('dailyProfit').textContent = dailyProfit.toFixed(2) + ' ₽';
-        document.getElementById('dailyPercent').textContent = dailyPercent.toFixed(2) + '%';
-        
-        let dailyPlanHtml = `<div style="margin-top: 8px;"><strong>📋 План на каждый день:</strong></div>`;
-        if(avgPercent && avgPercent > 0 && avgPercent <= 100) {
-            const tradeAmountNeeded = (dailyProfit / (avgPercent / 100)).toFixed(2);
-            const tradesNeeded = Math.ceil(dailyProfit / (startDeposit * avgPercent / 100));
-            dailyPlanHtml += `
-                <div class="calc-result-item">
-                    <span class="calc-label">💰 При средней прибыли ${avgPercent}% на сделку:</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">💵 Сумма сделки в день:</span>
-                    <span class="calc-value">${tradeAmountNeeded} ₽</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">📊 Количество сделок в день:</span>
-                    <span class="calc-value">${tradesNeeded} сделок</span>
-                </div>
-            `;
-        } else {
-            dailyPlanHtml += `
-                <div class="calc-result-item">
-                    <span class="calc-label">💡 Укажите средний % прибыли на сделку,</span>
-                </div>
-                <div class="calc-result-item">
-                    <span class="calc-label">чтобы рассчитать сумму и количество сделок</span>
-                </div>
-            `;
-        }
-        document.getElementById('dailyPlan').innerHTML = dailyPlanHtml;
-        document.getElementById('calcResult').style.display = 'block';
-    }
+    document.getElementById('getSignalBtn')?.addEventListener('click', getSignal);
     
-    function calculateMonthProfit(year, month) {
-        const monthStr = `${year}-${String(month+1).padStart(2,'0')}`;
-        let publicProfit = 0;
-        adminTrades.forEach(t => {
-            if(t.date.startsWith(monthStr)) {
-                publicProfit += t.profit || 0;
-            }
-        });
-        let privateProfit = 0;
-        guestTrades.forEach(t => {
-            if(t.date.startsWith(monthStr)) {
-                privateProfit += t.profit || 0;
-            }
-        });
-        return { publicProfit, privateProfit };
-    }
-    
-    function updateMonthStats() {
-        const { publicProfit, privateProfit } = calculateMonthProfit(currentYear, currentMonth);
-        const publicEl = document.getElementById('publicMonthProfit');
-        const privateEl = document.getElementById('privateMonthProfit');
-        if(publicEl) {
-            publicEl.textContent = `${publicProfit > 0 ? '+' : ''}${publicProfit.toFixed(2)} ₽`;
-            publicEl.className = `value ${publicProfit >= 0 ? 'profit-positive' : 'profit-negative'}`;
-        }
-        if(privateEl) {
-            privateEl.textContent = `${privateProfit > 0 ? '+' : ''}${privateProfit.toFixed(2)} ₽`;
-            privateEl.className = `value ${privateProfit >= 0 ? 'profit-positive' : 'profit-negative'}`;
-        }
-    }
-    
-    async function loadAdminTrades() {
-        try {
-            const response = await fetch(API_URL);
-            if(response.ok) {
-                adminTrades = await response.json();
-            } else {
-                adminTrades = [];
-            }
-        } catch(e) {
-            adminTrades = [];
-        }
-        renderCalendar(currentYear, currentMonth);
-        updateMonthStats();
-        updateDisciplineStats();
-    }
-    
-    async function saveAdminTrade(trade) {
-        try {
-            const response = await fetch(API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(trade)
-            });
-            if(response.ok) {
-                const newTrade = await response.json();
-                adminTrades.push(newTrade);
-                alert("✅ Общая сделка добавлена!");
-            } else {
-                alert("❌ Ошибка при сохранении");
-            }
-        } catch(e) {
-            alert("❌ Ошибка соединения");
-        }
-        renderCalendar(currentYear, currentMonth);
-        updateMonthStats();
-        updateDisciplineStats();
-        if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
-    }
-    
-    async function deleteAdminTradeFromServer(id) {
-        try {
-            await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-            adminTrades = adminTrades.filter(t => t.id != id);
-        } catch(e) {}
-        renderCalendar(currentYear, currentMonth);
-        updateMonthStats();
-        updateDisciplineStats();
-        if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
-    }
-    
-    function loadLocalData() {
-        const savedGuest = localStorage.getItem(`trades_${currentUserId}`);
-        guestTrades = savedGuest ? JSON.parse(savedGuest) : [];
-        const savedViolations = localStorage.getItem(`violations_${currentUserId}`);
-        violations = savedViolations ? JSON.parse(savedViolations) : [];
-    }
-    
-    function saveLocalData() {
-        localStorage.setItem(`trades_${currentUserId}`, JSON.stringify(guestTrades));
-        localStorage.setItem(`violations_${currentUserId}`, JSON.stringify(violations));
-    }
-    
-    function addLocalTrade(trade) {
-        guestTrades.push(trade);
-        saveLocalData();
-        renderCalendar(currentYear, currentMonth);
-        updateMonthStats();
-        updateDisciplineStats();
-        if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
-        alert("✅ Личная сделка добавлена!");
-        checkDailyLossLimit();
-    }
-    
-    function deleteLocalTrade(id) {
-        guestTrades = guestTrades.filter(t => t.id !== id);
-        saveLocalData();
-        renderCalendar(currentYear, currentMonth);
-        updateMonthStats();
-        updateDisciplineStats();
-        if(selectedDateForAdd) showTradesForDate(selectedDateForAdd);
-    }
-    
-    function addViolation(date, comment) {
-        violations = violations.filter(v => v.date !== date);
-        violations.push({ date, comment });
-        saveLocalData();
-        renderCalendar(currentYear, currentMonth);
-        if(selectedDateForAdd === date) showTradesForDate(date);
-        alert("✅ Нарушение сохранено!");
-    }
-    
-    function getViolationForDate(date) {
-        return violations.find(v => v.date === date);
-    }
-    
-    function addTrade(trade, isGlobal = false) {
-        if(isGlobal && isAdmin) {
-            saveAdminTrade(trade);
-        } else {
-            addLocalTrade(trade);
-        }
-    }
-    
-    function deleteTrade(id, isGlobal = false) {
-        if(isGlobal && isAdmin) {
-            deleteAdminTradeFromServer(id);
-        } else {
-            deleteLocalTrade(id);
-        }
-    }
-    
-    function showTradesForDate(dateStr) {
-        const panel = document.getElementById('tradesPanel');
-        const dayAdminTrades = adminTrades.filter(t => t.date === dateStr);
-        const dayGuestTrades = guestTrades.filter(t => t.date === dateStr);
-        const violation = getViolationForDate(dateStr);
-        let allTrades = [...dayGuestTrades, ...dayAdminTrades];
-        
-        if(allTrades.length === 0 && !violation) {
-            let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить</button>
-                           <button id="violationFromPanelBtn" class="warning">⚠️ Нарушение</button>`;
-            if(isAdmin) {
-                buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Общая сделка</button>`;
-            }
-            panel.innerHTML = `<div><h3>📅 ${dateStr}</h3><p>📭 Нет сделок.</p>
-                <div class="action-buttons">${buttons}</div>
-            </div>`;
-            document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, false));
-            document.getElementById('violationFromPanelBtn')?.addEventListener('click', () => openViolationModal(dateStr));
-            document.getElementById('addGlobalFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, true));
-            return;
-        }
-        
-        let profitTotal = 0, win = 0, loss = 0;
-        allTrades.forEach(t => {
-            profitTotal += t.profit;
-            if(t.profit > 0) win++;
-            if(t.profit < 0) loss++;
-        });
-        const winrate = allTrades.length ? Math.round((win/allTrades.length)*100) : 0;
-        
-        let html = `<div>
-            <h3>📅 ${dateStr}</h3>
-            <div class="winrate-badge">📊 Винрейт: ${winrate}% (${win}/${allTrades.length})</div>
-            <div>💰 Прибыль: ${profitTotal > 0 ? '+' : ''}${profitTotal.toFixed(2)} ₽</div>
-            ${violation ? `<div class="violation-note">⚠️ ${violation.comment}</div>` : ''}
-            <hr>
-        `;
-        
-        if(dayAdminTrades.length > 0) {
-            const adminProfit = dayAdminTrades.reduce((sum, t) => sum + (t.profit || 0), 0);
-            const adminWinCount = dayAdminTrades.filter(t => t.profit > 0).length;
-            const adminWinrate = dayAdminTrades.length ? Math.round((adminWinCount/dayAdminTrades.length)*100) : 0;
-            
-            html += `<div class="collapsible">
-                <div class="collapsible-header" data-target="adminTrades">
-                    <span><strong>👑 Сделки Ильи</strong> (${dayAdminTrades.length} шт. | ${adminProfit > 0 ? '+' : ''}${adminProfit.toFixed(2)} ₽ | винрейт: ${adminWinrate}%)</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div id="adminTrades" class="collapsible-content">
-                    ${dayAdminTrades.map(t => `
-                        <div class="trade-item admin-trade">
-                            <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
-                            <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                            <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
-                            ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                            ${isAdmin ? `<button class="danger" data-admin-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>` : ''}
-                        </div>
-                    `).join('')}
-                </div>
-            </div>`;
-        }
-        
-        if(dayGuestTrades.length > 0) {
-            const guestProfit = dayGuestTrades.reduce((sum, t) => sum + (t.profit || 0), 0);
-            const guestWinCount = dayGuestTrades.filter(t => t.profit > 0).length;
-            const guestWinrate = dayGuestTrades.length ? Math.round((guestWinCount/dayGuestTrades.length)*100) : 0;
-            
-            html += `<div class="collapsible">
-                <div class="collapsible-header" data-target="guestTrades">
-                    <span><strong>📋 Мои сделки</strong> (${dayGuestTrades.length} шт. | ${guestProfit > 0 ? '+' : ''}${guestProfit.toFixed(2)} ₽ | винрейт: ${guestWinrate}%)</span>
-                    <span class="arrow">▼</span>
-                </div>
-                <div id="guestTrades" class="collapsible-content">
-                    ${dayGuestTrades.map(t => `
-                        <div class="trade-item">
-                            <div><strong>${t.time}</strong> | ${t.instrument} | ${t.direction}</div>
-                            <div>💰 ${t.amount} ₽ ${t.isLoss ? '' : `| ${t.payoutPercent}%`}</div>
-                            <div class="${t.profit > 0 ? 'profit' : 'loss'}">${t.isLoss ? `❌ Убыток: -${t.amount} ₽` : `✅ Итог: ${(t.amount + t.profit).toFixed(2)} ₽`}</div>
-                            ${t.comment ? `<div>📝 ${t.comment}</div>` : ''}
-                            <button class="danger" data-guest-id="${t.id}" style="margin-top:6px;">🗑️ Удалить</button>
-                        </div>
-                    `).join('')}
-                </div>
-            </div>`;
-        }
-        
-        let buttons = `<button id="addFromPanelBtn" class="secondary">➕ Добавить</button>
-                       <button id="violationFromPanelBtn" class="warning">⚠️ Нарушение</button>`;
-        if(isAdmin) {
-            buttons += `<button id="addGlobalFromPanelBtn" class="purple">👑 Общая сделка</button>`;
-        }
-        html += `<hr><div class="action-buttons">${buttons}</div></div>`;
-        panel.innerHTML = html;
-        
-        document.querySelectorAll('.collapsible-header').forEach(header => {
-            const targetId = header.getAttribute('data-target');
-            const content = document.getElementById(targetId);
-            if(content) {
-                header.addEventListener('click', () => {
-                    header.classList.toggle('collapsed');
-                    content.classList.toggle('collapsed');
-                });
-            }
-        });
-        
-        document.getElementById('addFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, false));
-        document.getElementById('violationFromPanelBtn')?.addEventListener('click', () => openViolationModal(dateStr));
-        document.getElementById('addGlobalFromPanelBtn')?.addEventListener('click', () => openAddTradeModal(dateStr, true));
-        document.querySelectorAll('[data-admin-id]').forEach(btn => {
-            btn.onclick = () => deleteTrade(parseInt(btn.dataset.adminId), true);
-        });
-        document.querySelectorAll('[data-guest-id]').forEach(btn => {
-            btn.onclick = () => deleteTrade(parseInt(btn.dataset.guestId), false);
-        });
-    }
-    
-    function openViolationModal(dateStr) {
-        pendingViolationDate = dateStr;
-        const existing = getViolationForDate(dateStr);
-        document.getElementById('violationComment').value = existing ? existing.comment : '';
-        document.getElementById('violationModal').style.display = 'flex';
-    }
-    
-    function openAddTradeModal(dateStr, isGlobal = false) {
-        selectedDateForAdd = dateStr;
-        selectedPair = null;
-        
-        const formDiv = document.getElementById('addTradeForm');
-        const title = isGlobal ? "👑 Общая сделка (увидят все)" : "➕ Моя сделка (только вам)";
-        
-        formDiv.innerHTML = `
-            <h3>${title} на ${dateStr}</h3>
-            <div id="step1" class="step active">
-                <input type="time" id="tradeTime" value="${getCurrentTime()}">
-                <div id="currencySelectorContainer"></div>
-                <div class="step-buttons">
-                    <button id="cancelStep1Btn" class="secondary">Отмена</button>
-                </div>
-            </div>
-            <div id="step2" class="step">
-                <div id="selectedPairDisplay" style="background:#0A2A1A; padding:10px; border-radius:20px; margin-bottom:16px; text-align:center; font-weight:bold;"></div>
-                <div class="direction-buttons">
-                    <button id="longBtn" class="dir-btn">📈 LONG</button>
-                    <button id="shortBtn" class="dir-btn">📉 SHORT</button>
-                </div>
-                <div class="add-buttons">
-                    <button id="profitTypeBtn" style="background:#1E6F3F;">✅ Прибыль</button>
-                    <button id="lossTypeBtn" class="danger">❌ Убыток</button>
-                </div>
-                <div id="profitFields" style="display:none;">
-                    <input type="number" inputmode="decimal" id="profitAmount" placeholder="Сумма (₽)" value="1000">
-                    <input type="number" inputmode="decimal" id="profitPercent" placeholder="Процент (20-92)" value="92">
-                    <div id="profitPreview" style="background:#0A2A1A; padding:10px; border-radius:20px; margin:10px 0;">💵 Итог: 0 ₽</div>
-                    <textarea id="profitComment" placeholder="Комментарий"></textarea>
-                    <button id="submitProfitBtn">✅ Добавить</button>
-                </div>
-                <div id="lossFields" style="display:none;">
-                    <input type="number" inputmode="decimal" id="lossAmount" placeholder="Сумма убытка (₽)" value="1000">
-                    <textarea id="lossComment" placeholder="Комментарий"></textarea>
-                    <button id="submitLossBtn" class="danger">❌ Добавить убыток</button>
-                </div>
-                <div class="step-buttons">
-                    <button id="backStep2Btn" class="secondary">◀ Назад</button>
-                    <button id="cancelStep2Btn" class="secondary">Отмена</button>
-                </div>
-            </div>
-        `;
-        
-        buildCurrencySelector('currencySelectorContainer');
-        
-        let direction = "LONG";
-        const longBtn = document.getElementById('longBtn');
-        const shortBtn = document.getElementById('shortBtn');
-        const profitTypeBtn = document.getElementById('profitTypeBtn');
-        const lossTypeBtn = document.getElementById('lossTypeBtn');
-        const profitFields = document.getElementById('profitFields');
-        const lossFields = document.getElementById('lossFields');
-        const step1 = document.getElementById('step1');
-        const step2 = document.getElementById('step2');
-        
-        function updateDirUI() {
-            if(direction === "LONG") {
-                longBtn.classList.add('dir-active-long');
-                shortBtn.classList.remove('dir-active-short');
-            } else {
-                shortBtn.classList.add('dir-active-short');
-                longBtn.classList.remove('dir-active-long');
-            }
-        }
-        
-        document.getElementById('cancelStep1Btn')?.addEventListener('click', () => {
-            document.getElementById('addTradeModal').style.display = 'none';
-        });
-        document.getElementById('cancelStep2Btn')?.addEventListener('click', () => {
-            document.getElementById('addTradeModal').style.display = 'none';
-        });
-        document.getElementById('backStep2Btn')?.addEventListener('click', () => {
-            step1.classList.add('active');
-            step2.classList.remove('active');
-            selectedPair = null;
-            buildCurrencySelector('currencySelectorContainer');
-        });
-        
-        longBtn.onclick = () => { direction = "LONG"; updateDirUI(); };
-        shortBtn.onclick = () => { direction = "SHORT"; updateDirUI(); };
-        updateDirUI();
-        
-        profitTypeBtn.onclick = () => {
-            profitFields.style.display = 'block';
-            lossFields.style.display = 'none';
-            const amountInp = document.getElementById('profitAmount');
-            const percentInp = document.getElementById('profitPercent');
-            const preview = document.getElementById('profitPreview');
-            function updatePreview() {
-                let amount = parseFloat(amountInp?.value) || 0;
-                let percent = parseFloat(percentInp?.value) || 0;
-                if(percent < 20) percent = 20;
-                if(percent > 92) percent = 92;
-                const profit = amount * percent / 100;
-                const total = amount + profit;
-                preview.innerHTML = `💵 Итог: ${total.toFixed(2)} ₽ (прибыль: +${profit.toFixed(2)} ₽)`;
-            }
-            amountInp.addEventListener('input', updatePreview);
-            percentInp.addEventListener('input', updatePreview);
-            updatePreview();
-            document.getElementById('submitProfitBtn').onclick = () => {
-                let amount = parseFloat(amountInp.value) || 0;
-                let percent = parseFloat(percentInp.value) || 0;
-                if(percent < 20) percent = 20;
-                if(percent > 92) percent = 92;
-                const comment = document.getElementById('profitComment').value;
-                if(amount <= 0) return alert("Введите сумму");
-                const profit = amount * percent / 100;
-                addTrade({
-                    id: Date.now(), date: dateStr, time: document.getElementById('tradeTime').value,
-                    instrument: selectedPair, direction: direction,
-                    amount: amount, payoutPercent: percent, profit: profit, comment: comment, isLoss: false
-                }, isGlobal);
-                document.getElementById('addTradeModal').style.display = 'none';
-            };
-        };
-        
-        lossTypeBtn.onclick = () => {
-            lossFields.style.display = 'block';
-            profitFields.style.display = 'none';
-            document.getElementById('submitLossBtn').onclick = () => {
-                let amount = parseFloat(document.getElementById('lossAmount').value) || 0;
-                const comment = document.getElementById('lossComment').value;
-                if(amount <= 0) return alert("Введите сумму");
-                addTrade({
-                    id: Date.now(), date: dateStr, time: document.getElementById('tradeTime').value,
-                    instrument: selectedPair, direction: direction,
-                    amount: amount, payoutPercent: null, profit: -amount, comment: comment, isLoss: true
-                }, isGlobal);
-                document.getElementById('addTradeModal').style.display = 'none';
-            };
-        };
-        
-        document.getElementById('addTradeModal').style.display = 'flex';
-    }
-    
-    function getSignal() {
-        const pair = document.getElementById('signalPair').value;
-        const timeframe = document.getElementById('signalTimeframe').value;
-        const amount = document.getElementById('signalAmount').value;
-        
-        // Имитация получения сигнала (позже заменим на реальный API)
-        const signals = ["CALL", "PUT"];
-        const randomSignal = signals[Math.floor(Math.random() * signals.length)];
-        const confidence = Math.floor(Math.random() * 30) + 60;
-        
-        document.getElementById('signalDirection').innerHTML = `<span class="${randomSignal === 'CALL' ? 'profit' : 'loss'}">${randomSignal}</span>`;
-        document.getElementById('signalConfidence').textContent = `${confidence}%`;
-        document.getElementById('signalReason').textContent = randomSignal === 'CALL' ? "RSI ниже 30, MACD даёт сигнал на покупку" : "RSI выше 70, MACD даёт сигнал на продажу";
-        document.getElementById('signalResult').style.display = 'block';
-        
-        document.getElementById('applySignalBtn').onclick = () => {
-            const today = new Date().toISOString().slice(0,10);
-            const direction = randomSignal === "CALL" ? "LONG" : "SHORT";
-            addTrade({
-                id: Date.now(), date: today, time: getCurrentTime(),
-                instrument: pair, direction: direction,
-                amount: parseFloat(amount), payoutPercent: 92,
-                profit: parseFloat(amount) * 0.92, comment: `Сигнал: ${randomSignal} (${timeframe} мин)`, isLoss: false
-            }, false);
-            document.getElementById('addTradeModal').style.display = 'none';
-        };
-    }
-    
-    function getDayColorClass(dateStr) {
-        const dayAdminTrades = adminTrades.filter(t => t.date === dateStr);
-        const dayGuestTrades = guestTrades.filter(t => t.date === dateStr);
-        const violation = getViolationForDate(dateStr);
-        let allTrades = [...dayGuestTrades, ...dayAdminTrades];
-        if(allTrades.length === 0 && !violation) return '';
-        const hasAdminTrades = dayAdminTrades.length > 0;
-        const hasComments = allTrades.some(t => t.comment && t.comment.trim() !== '') || violation;
-        if(hasComments) return 'comment-day';
-        let profitTotal = 0;
-        allTrades.forEach(t => profitTotal += t.profit);
-        if(hasAdminTrades && profitTotal > 0) return 'admin-day';
-        if(hasAdminTrades && profitTotal < 0) return 'loss-day';
-        if(profitTotal > 0) return 'profit-day';
-        if(profitTotal < 0) return 'loss-day';
-        return '';
-    }
-    
-    function renderCalendar(year, month) {
-        const monthNames = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-        const firstDay = new Date(year, month, 1);
-        let startOffset = firstDay.getDay();
-        startOffset = startOffset === 0 ? 6 : startOffset - 1;
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        let html = `<div style="font-size:16px; font-weight:bold; margin:10px 0 6px 0;">${monthNames[month]} ${year}</div>
-            <div class="calendar-grid"><div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div>Сб</div><div>Вс</div>`;
-        for(let i=0; i<startOffset; i++) html += '<div></div>';
-        for(let day=1; day<=daysInMonth; day++) {
-            const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
-            const colorClass = getDayColorClass(dateStr);
-            html += `<div class="calendar-day ${colorClass}" data-date="${dateStr}">${day}</div>`;
-        }
-        html += `</div>`;
-        document.getElementById('calendarContainer').innerHTML = html;
-        document.querySelectorAll('.calendar-day').forEach(el => {
-            const date = el.getAttribute('data-date');
-            if(date) {
-                el.onclick = () => {
-                    if(selectedDayElement) selectedDayElement.classList.remove('selected-day');
-                    el.classList.add('selected-day');
-                    selectedDayElement = el;
-                    selectedDateForAdd = date;
-                    showTradesForDate(date);
-                };
-            }
-        });
-        const defaultDate = `${year}-${String(month+1).padStart(2,'0')}-01`;
-        const defaultDayElement = document.querySelector(`.calendar-day[data-date="${defaultDate}"]`);
-        if(defaultDayElement) {
-            if(selectedDayElement) selectedDayElement.classList.remove('selected-day');
-            defaultDayElement.classList.add('selected-day');
-            selectedDayElement = defaultDayElement;
-        }
-        showTradesForDate(defaultDate);
-        updateMonthStats();
-    }
-    
-    function registerUser() {
-        let allUsers = JSON.parse(localStorage.getItem("all_users") || "[]");
-        const exists = allUsers.find(u => u.id === currentUserId);
-        if(!exists) {
-            let userName = "Пользователь";
-            if(tg?.initDataUnsafe?.user) {
-                userName = tg.initDataUnsafe.user.first_name || "Аноним";
-            }
-            allUsers.push({ id: currentUserId, name: userName, first_seen: new Date().toISOString() });
-            localStorage.setItem("all_users", JSON.stringify(allUsers));
-        }
-    }
-    
-    function showUsersList() {
-        const allUsers = JSON.parse(localStorage.getItem("all_users") || "[]");
-        const usersListDiv = document.getElementById('usersList');
-        if(allUsers.length === 0) {
-            usersListDiv.innerHTML = "<p>Нет пользователей</p>";
-        } else {
-            let html = "";
-            allUsers.forEach(u => {
-                const userTrades = JSON.parse(localStorage.getItem(`trades_${u.id}`) || "[]");
-                let totalProfit = 0, tradeCount = userTrades.length;
-                userTrades.forEach(t => totalProfit += t.profit);
-                html += `<div style="background:#0E1C2C; border-radius:14px; padding:10px; margin-bottom:8px;">
-                    <div><strong>${u.name}</strong></div>
-                    <div>🆔 ${u.id}</div>
-                    <div>📊 Сделок: ${tradeCount} | Прибыль: ${totalProfit > 0 ? '+' : ''}${totalProfit.toFixed(2)} ₽</div>
-                    <div>📅 Визит: ${u.first_seen?.slice(0,10) || '—'}</div>
-                </div>`;
-            });
-            usersListDiv.innerHTML = html;
-        }
-        document.getElementById('usersModal').style.display = 'flex';
-    }
-    
-    function populateMonthYearSelectors() {
-        const monthSelect = document.getElementById('monthSelect');
-        const yearSelect = document.getElementById('yearSelect');
-        const months = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
-        months.forEach((m, idx) => {
-            const option = document.createElement('option');
-            option.value = idx;
-            option.textContent = m;
-            if(idx === currentMonth) option.selected = true;
-            monthSelect.appendChild(option);
-        });
-        for(let y=2026; y<=2027; y++) {
-            const option = document.createElement('option');
-            option.value = y;
-            option.textContent = y;
-            if(y === currentYear) option.selected = true;
-            yearSelect.appendChild(option);
-        }
-        document.getElementById('refreshCalendarBtn').onclick = () => {
-            currentYear = parseInt(yearSelect.value);
-            currentMonth = parseInt(monthSelect.value);
-            renderCalendar(currentYear, currentMonth);
-        };
-    }
-    
-    const dotsBtn = document.getElementById('dotsBtn');
-    const dropdownMenu = document.getElementById('dropdownMenu');
-    if(dotsBtn) {
-        dotsBtn.addEventListener('click', function(e) {
-            e.stopPropagation();
-            dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
-        });
-    }
-    document.addEventListener('click', function(e) {
-        if(dropdownMenu && !dotsBtn?.contains(e.target)) {
-            dropdownMenu.style.display = 'none';
-        }
-    });
-    
-    const headerTitle = document.querySelector('.header > div:first-child');
-    if(headerTitle) {
-        let pressTimer;
-        const activateAdmin = () => {
-            if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
-                isAdmin = true;
-                document.getElementById('adminBadge').style.display = 'inline-block';
-                updateAdminMenu();
-                renderCalendar(currentYear, currentMonth);
-                alert("✅ Режим администратора активирован");
-            } else {
-                alert("⛔ Доступ только для администратора");
-            }
-        };
-        headerTitle.addEventListener('touchstart', (e) => { pressTimer = setTimeout(activateAdmin, 1000); });
-        headerTitle.addEventListener('touchend', () => { clearTimeout(pressTimer); });
-        headerTitle.addEventListener('touchmove', () => { clearTimeout(pressTimer); });
-        headerTitle.addEventListener('mousedown', () => { pressTimer = setTimeout(activateAdmin, 1000); });
-        headerTitle.addEventListener('mouseup', () => { clearTimeout(pressTimer); });
-        headerTitle.addEventListener('mouseleave', () => { clearTimeout(pressTimer); });
-    }
-    
-    function updateAdminMenu() {
-        const menu = document.getElementById('dropdownMenu');
-        if(isAdmin) {
-            menu.innerHTML = `
-                <button id="usersListBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">👥 Список пользователей</button>
-                <button id="logoutDevBtn" class="danger" style="width:100%; text-align:left; padding:10px 14px; background:#8B2C2C; border:none; color:white; font-size:14px;">🚪 Выйти</button>
-            `;
-            document.getElementById('usersListBtn')?.addEventListener('click', () => showUsersList());
-            document.getElementById('logoutDevBtn')?.addEventListener('click', () => {
-                isAdmin = false;
-                document.getElementById('adminBadge').style.display = 'none';
-                updateAdminMenu();
-                renderCalendar(currentYear, currentMonth);
-                dropdownMenu.style.display = 'none';
-                alert("👋 Вы вышли");
-            });
-        } else {
-            menu.innerHTML = `<button id="devMenuBtn" style="width:100%; text-align:left; padding:10px 14px; background:none; border:none; color:white; font-size:14px;">🔐 Для разработчиков</button>`;
-            document.getElementById('devMenuBtn')?.addEventListener('click', () => {
-                dropdownMenu.style.display = 'none';
-                if(currentUserId && ADMIN_IDS.includes(parseInt(currentUserId))) {
-                    isAdmin = true;
-                    document.getElementById('adminBadge').style.display = 'inline-block';
-                    updateAdminMenu();
-                    renderCalendar(currentYear, currentMonth);
-                    alert("✅ Режим администратора активирован");
-                } else {
-                    alert("⛔ Доступ только для администратора");
-                }
-            });
-        }
-    }
-    
-    document.getElementById('closeDevBtn').onclick = () => document.getElementById('devModal').style.display = 'none';
-    document.getElementById('closeUsersBtn').onclick = () => document.getElementById('usersModal').style.display = 'none';
-    document.getElementById('closeAlertBtn').onclick = () => document.getElementById('alertModal').style.display = 'none';
-    document.getElementById('saveViolationBtn').onclick = () => {
-        const comment = document.getElementById('violationComment').value.trim();
-        if(!comment) return alert("Введите комментарий");
-        if(pendingViolationDate) addViolation(pendingViolationDate, comment);
-        document.getElementById('violationModal').style.display = 'none';
-        document.getElementById('violationComment').value = '';
-        pendingViolationDate = null;
-    };
-    document.getElementById('closeViolationBtn').onclick = () => {
-        document.getElementById('violationModal').style.display = 'none';
-        pendingViolationDate = null;
-    };
-    
-    document.getElementById('calculateBtn').addEventListener('click', calculateAccelerator);
-    document.getElementById('saveLossLimitBtn').addEventListener('click', saveLossLimit);
-    document.getElementById('getSignalBtn').addEventListener('click', getSignal);
-    
-    window.onclick = (e) => {
-        if(e.target === document.getElementById('devModal')) document.getElementById('devModal').style.display = 'none';
-        if(e.target === document.getElementById('addTradeModal')) document.getElementById('addTradeModal').style.display = 'none';
-        if(e.target === document.getElementById('violationModal')) document.getElementById('violationModal').style.display = 'none';
-        if(e.target === document.getElementById('usersModal')) document.getElementById('usersModal').style.display = 'none';
-        if(e.target === document.getElementById('alertModal')) document.getElementById('alertModal').style.display = 'none';
-    };
-    
-    let adminTrades = [];
-    let guestTrades = [];
-    let violations = [];
-    let selectedDateForAdd = null;
-    let pendingViolationDate = null;
-    let currentYear = 2026;
-    let currentMonth = 3;
-    let selectedDayElement = null;
-    
-    async function init() {
-        initTheme();
-        initSwitches();
-        registerUser();
-        populateMonthYearSelectors();
-        updateAdminMenu();
-        initTabs();
-        loadLocalData();
-        loadLossLimit();
-        await loadAdminTrades();
-        renderCalendar(currentYear, currentMonth);
-        await registerVisitor();
-        updateDisciplineStats();
-    }
-    
-    init();
+    populateMonths();
+    initTabs();
+    renderCalendar(currentYear, currentMonth);
 </script>
 </body>
 </html>
